@@ -179,8 +179,8 @@ def new_items(message):
 def new_price(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    if message.text.isdigit() == True and message.text > 0:
-        one_item.items[-1]['price'] = message.text
+    if int(message.text) > 0:
+        one_item.items[-1]['price'] = int(message.text)
         db.session.commit()
         bot.send_message(chat_id, "Цена " + one_item.items[-1]['price'] + " добавлена")
         bot.sent_message(chat_id, "Загрузите фото товара")
