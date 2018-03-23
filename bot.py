@@ -33,7 +33,7 @@ WEBHOOK_URL_PATH = "/%s/" % (API_TOKEN)
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
 
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(API_TOKEN, threaded=False)
 
 app = flask.Flask(__name__)
 
