@@ -100,6 +100,9 @@ db.create_all()
 # items = Ecommerce.query.filter_by(chat_id='123321').all()
 # -- Получить одну запись:
 # one_item = Ecommerce.query.filter_by(chat_id='123321').first()
+@app.route('/', methods=['GET'])
+def mainw():
+    return '123'
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
