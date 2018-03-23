@@ -177,7 +177,8 @@ def process_choose(message):
         keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
         print(str(all_items[1]))
         for i in range(len(all_items)):
-            keyboard.row(types.KeyboardButton(all_items[i]))
+            # keyboard.row(types.KeyboardButton(all_items[i]))
+            print(all_items[i])
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
