@@ -8,11 +8,7 @@ import flask
 import logging
 from time import sleep
 
-API_TOKEN = '522766611:AAE0Yv-fxf35pAk_bU4MIzZtfPPym4Z4DpM'
-
-WEBHOOK_HOST = '85.143.209.253'
-WEBHOOK_PORT = 8443  # 443, 80, 88 or 8443 (port need to be 'open')
-WEBHOOK_LISTEN = '0.0.0.0'  # In some VPS you may need to put here the IP addr
+from config import *
 
 WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Path to the ssl certificate
 WEBHOOK_SSL_PRIV = '/etc/dehydrated/certs/dynamic-door.ru/privkey.pem'  # Path to the ssl private key
@@ -40,6 +36,42 @@ bot = telebot.TeleBot(API_TOKEN, threaded=False)
 app = flask.Flask(__name__)
 
 
+###### DB
+from flask_sqlalchemy import SQLAlchemy
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONFIG
+db = SQLAlchemy(app)
+
+
+class Ecommerce(db.Model):
+    chat_id = db.Column(db.String(255), unique=True)
+
+    def __init__(self, username, email):
+        self.username = username
+        self.email = email
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
+# create table
+# db.create_all()
+
+## СМОТРИ ТУТ!
+# --Добавляем нового чувака в базу, заполняем поля:
+# ecommerce_item = Ecommerce('admin', 'admin@example.com')
+# --Добавляем в БД:
+# db.session.add(ecommerce_item)
+# db.session.commit()
+# 
+# -- Чтобы получить:
+# items = Ecommerce.query.all() # все
+# -- Получить конкретные:
+# items = Ecommerce.query.filter_by(chat_id='123321').all()
+# -- Получить одну запись:
+# one_item = Ecommerce.query.filter_by(chat_id='123321').first()
+
+
 # Empty webserver index, return nothing, just http 200
 @app.route('/', methods=['GET', 'HEAD'])
 def index():
@@ -63,7 +95,7 @@ def webhook():
 class Chat:
     def __init__(self):
         self.has_shop = None
-		self.market = None
+        self.market = None
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
@@ -98,9 +130,9 @@ def process_choose(message):
     if message.text == 'Вопрос-ответ':
         bot.send_message(chat_id, "123")
         bot.register_next_step_handler(message, process_choose)
-	elif message.text == 'Создать магазин':
-		bot.send_message(chat_id, "Введите название магазина")
-		bot.register_next_step_handler(message, new_market)
+    elif message.text == 'Создать магазин':
+        bot.send_message(chat_id, "Введите название магазина")
+        bot.register_next_step_handler(message, new_market)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.register_next_step_handler(message, process_choose)
@@ -108,16 +140,17 @@ def process_choose(message):
 ###### /HERE
 
 def new_market(message):
-	chat_id = message.chat.id
-	chat_dict[chat_id].market = message.text
-	bot.send_message(chat_id, "Вы ввели название " + chat_dict[chat_id].market)
-	bot.register_next_step_handler(message, process_choose)
+    chat_id = message.chat.id
+    chat_dict[chat_id].market = message.text
+    bot.send_message(chat_id, "Вы ввели название " + chat_dict[chat_id].market)
+    bot.register_next_step_handler(message, process_choose)
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
 sleep(1)
 # Set webhook
 bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
                 certificate=open(WEBHOOK_SSL_CERT, 'r'))
+
 
 # Start flask server
 app.run(host=WEBHOOK_LISTEN,
