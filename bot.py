@@ -41,6 +41,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONFIG
+app.config['SERVER_NAME'] = 'dynamic-door.ru'
 db = SQLAlchemy(app)
 
 
