@@ -147,7 +147,7 @@ def new_market(message):
     one_item.market = message.text
     db.session.commit()
     bot.send_message(chat_id, "Вы ввели название " + one_item.market)
-    bot.send_message(chat_id, "Пришлите вашу геопозицию")
+    bot.send_message(chat_id, "Введите ваш адрес:")
     bot.register_next_step_handler(message, new_location)
 
 def new_items(message):
@@ -177,15 +177,12 @@ def new_price(message):
 
 def new_location(message):
     chat_id = message.chat.id
-    if message.location:
-        one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-        one_item.location = message.location(lon, lat)
-        db.session.commit()
-        bot.send_message(chat_id, "Ваш магазин добавлен")
-        bot.register_next_step_handler(message, process_choose)
-    else: 
-        bot.send_message(chat_id, "Пришлите корректную геопозицию")
-        bot.register_next_step_handler(message, new_location)
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.location = message.text
+    db.session.commit()
+    bot.send_message(chat_id, "Ваш магазин добавлен. Магазин '"+one_item.market+ "' по адресу '"+ one_item.location+"'")
+    bot.register_next_step_handler(message, process_choose)
+
         
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
