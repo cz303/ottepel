@@ -138,7 +138,7 @@ def menu(message):
     else:
         markup.row(types.KeyboardButton('Получить информацию о магазине'))
         markup.row(types.KeyboardButton('Добавить товар'))
-        markup.row(types.KeyboardButton('Вывести товары'))
+        markup.row(types.KeyboardButton('Вывести количество товаров'))
     bot.register_next_step_handler(message, process_choose)
     return markup
 
@@ -167,7 +167,7 @@ def process_choose(message):
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
-    elif message.text == 'Вывести товар': 
+    elif message.text == 'Вывести количество товаров': 
         all_items = Item.query.filter_by(market_id=chat_id).all() 
         bot.send_message(chat_id, "У вас: " + len(all_items) + " товаров")
     else:
