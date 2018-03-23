@@ -28,3 +28,5 @@ def process_choose(message):
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.register_next_step_handler(message, process_choose)
+
+bot.polling()
