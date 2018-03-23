@@ -170,12 +170,6 @@ def process_choose(message):
     elif message.text == 'Вывести количество товаров': 
         all_items = Item.query.filter_by(market_id=chat_id).all()
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
-        keyboard = types.InlineKeyboardMarkup()
-        btns = []
-        for i in all_items:
-            btns.append(types.InlineKeyboardButton(text=i, callback_data=i))
-            keyboard.add(*btns)
-        return keyboard
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
