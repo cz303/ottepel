@@ -158,7 +158,7 @@ def new_items(message):
         bot.register_next_step_handler(message, new_price)
     else:
         bot.send_message(chat_id, "Цена уже была задана")
-        bot.register_next_step_handler(message, process_choose, reply_markup=menu(message))
+        bot.register_next_step_handler(message, reply_markup=menu(message))
 
 def new_price(message):
     chat_id = message.chat.id
@@ -167,7 +167,7 @@ def new_price(message):
         one_item.items[-1]['price'] = message.text
         db.session.commit()
         bot.send_message(chat_id, "Цена " + one_item.items[-1]['price'] + " добавлена")
-        bot.register_next_step_handler(message, process_choose, reply_markup=menu(message))
+        bot.register_next_step_handler(message, reply_markup=menu(message))
     else:
         bot.send_message(chat_id, "Введите верное значение")
         bot.register_next_step_handler(message, new_price)
@@ -178,7 +178,7 @@ def new_location(message):
     one_item.location = message.text
     db.session.commit()
     bot.send_message(chat_id, "Ваш магазин добавлен. Магазин '"+one_item.market+ "' по адресу '"+ one_item.location+"'")
-    bot.register_next_step_handler(message, process_choose, reply_markup=menu(message))
+    bot.register_next_step_handler(message, reply_markup=menu(message))
 
         
 
