@@ -172,7 +172,7 @@ def process_choose(message):
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
         keyboard = types.InlineKeyboardMarkup()
         btns = []
-        for i in m:
+        for i in all_items:
             btns.append(types.InlineKeyboardButton(text=i, callback_data=i))
             keyboard.add(*btns)
         return keyboard
