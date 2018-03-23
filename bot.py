@@ -176,6 +176,7 @@ def new_location(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.location = message.text
+    one_item.has_shop = True
     db.session.commit()
     bot.send_message(chat_id, "Ваш магазин добавлен. Магазин '"+one_item.market+ "' по адресу '"+ one_item.location+"'")
     bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
