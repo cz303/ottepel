@@ -90,12 +90,13 @@ def index(username):
     if not one_item:
         if username == '':
             # main domain, show all
+            return '123'
         else:
             # redirect to main
             return flask.redirect("https://dynamic-door.ru/", code=302)
     else:
         # this is merchant's subdomain
-
+        return username
 
 
 # Process webhook calls
