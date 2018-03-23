@@ -170,16 +170,12 @@ def new_market(message):
 
 def new_items(message):
     chat_id = message.chat.id
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    if not one_item.items[-1]['price']:
-        one_item.items.append({'name': message.text})
-        db.session.commit()
-        bot.send_message(chat_id, "Товар " + one_item.items[-1]['name'] + " добавлен")
-        bot.send_message(chat_id, "Введите цену товара")
-        bot.register_next_step_handler(message, new_price)
-    else:
-        bot.send_message(chat_id, "Цена уже была задана")
-        bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()    
+    one_item.items.append({'name': message.text})
+    db.session.commit()
+    bot.send_message(chat_id, "Товар " + one_item.items[-1]['name'] + " добавлен")
+    bot.send_message(chat_id, "Введите цену товара")
+    bot.register_next_step_handler(message, new_price)
 
 def new_price(message):
     chat_id = message.chat.id
