@@ -77,6 +77,7 @@ def menu(message):
     chat_id = message.chat.id
     if not chat_dict[chat_id].has_shop:
         markup.row(types.KeyboardButton('Создать магазин'))
+		markup.row(types.KeyboardButton('Геолокация'))
     else:
         markup.row(types.KeyboardButton('Добавить товар'))
         markup.row(types.KeyboardButton('Вывести товары'))
@@ -102,6 +103,7 @@ def process_choose(message):
 		bot.send_message(chat_id, "Введите название магазина")
 		bot.register_next_step_handler(message, new_market)
 	elif message.text == 'Геолокация':
+		bot.send_message(chat_id, "Ваша геолокация")
 		bot.register_next_step_handler(message, geolocation)
     else:
         bot.reply_to(message, "Команда не распознана")
@@ -112,7 +114,7 @@ def process_choose(message):
 def new_market(message):
 	chat_id = message.chat.id
 	chat_dict[chat_id].market = message.text
-	bot.send_message(chat_id, "Вы ввели название " + chat_dict[chat_id].market)
+	bot.send_message(chat_id, "Вы ввели название" + " " + chat_dict[chat_id].market)
 	bot.register_next_step_handler(message, process_choose)
 
 def geolocation(message):
