@@ -197,13 +197,13 @@ def new_price(message):
 
 def new_slug(message):
     chat_id = message.chat.id
-    domain_item = Ecommerce.query.filter_by(domain=domain).first()
+    domain_item = Ecommerce.query.filter_by(domain=message.text).first()
     if domain_item:
         bot.send_message(chat_id, "Такое доменное имя уже занято :( Введите другое:")
         bot.register_next_step_handler(message, new_slug)
     else:
-        r = slugify(txt)
-        if r == txt:
+        r = slugify(message.text)
+        if r == message.text:
             one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
             one_item.domain = r
             db.session.commit()
