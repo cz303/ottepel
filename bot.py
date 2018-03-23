@@ -106,6 +106,7 @@ def menu(message):
     if not one_item.has_shop:
         markup.row(types.KeyboardButton('Создать магазин'))
     else:
+        markup.row(types.KeyboardButton('Получить информацию о магазине'))
         markup.row(types.KeyboardButton('Добавить товар'))
         markup.row(types.KeyboardButton('Вывести товары'))
     bot.register_next_step_handler(message, process_choose)
@@ -132,6 +133,10 @@ def process_choose(message):
     elif message.text == 'Добавить товар':
         bot.send_message(chat_id, "Введитие название товара")
         bot.register_next_step_handler(message, new_items)
+    elif message.text == 'Получить информацию о магазине':
+        one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+        bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
+        bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
