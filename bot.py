@@ -176,8 +176,8 @@ def new_price(message):
         bot.register_next_step_handler(message, new_price)
 
 def new_location(message):
+    chat_id = message.chat.id
     if message.location:
-        chat_id = message.chat.id
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         one_item.location = message.location(lon, lat)
         db.session.commit()
