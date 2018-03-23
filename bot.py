@@ -173,7 +173,6 @@ def new_items(message):
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()    
     one_item.items.append({'name': message.text})
     db.session.commit()
-    bot.send_message(chat_id, "Товар " + one_item.items[-1]['name'] + " добавлен")
     bot.send_message(chat_id, "Введите цену товара")
     bot.register_next_step_handler(message, new_price)
 
