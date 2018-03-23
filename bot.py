@@ -49,12 +49,14 @@ class Ecommerce(db.Model):
     has_shop = db.Column(db.Boolean, default=False, nullable=False)
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
+    items = db.Column(db.PickleType())
 
-    def __init__(self, chat_id, has_shop=False, market=None, location=None):
+    def __init__(self, chat_id, has_shop=False, market=None, location=None, items=[]):
         self.chat_id = chat_id
         self.has_shop = has_shop
         self.market = market
         self.location = location
+        self.items = items
 
     def __repr__(self):
         return '<Ecommerce %r>' % self.chat_id
@@ -96,7 +98,6 @@ def webhook():
 
 ###### HERE
 
-
 def menu(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
     chat_id = message.chat.id
@@ -118,7 +119,7 @@ def start(message):
         db.session.add(ecommerce_item)
         db.session.commit()
         # приветственное слово
-        bot.send_message(message.chat.id, "Привет, !", reply_markup=menu(message))
+        bot.send_message(message.chat.id, "Привет!", reply_markup=menu(message))
     else:
         bot.send_message(message.chat.id, "Сперва введите /start")
 
@@ -130,9 +131,9 @@ def process_choose(message):
     elif message.text == 'Создать магазин':
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
-    elif message.text == 'Геолокация':
-        bot.send_message(chat_id, "Ваша геолокация")
-        bot.register_next_step_handler(message, geolocation)
+    elif message.test == 'Добавить товар':
+        bot.send_message(chat_id, "Введитие название товара")
+        bot.register_next_step_handler(message, new_items)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.register_next_step_handler(message, process_choose)
@@ -147,13 +148,43 @@ def new_market(message):
     bot.send_message(chat_id, "Вы ввели название " + one_item.market)
     bot.register_next_step_handler(message, process_choose)
 
-def geolocation(message):
+def new_items(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    one_item.location = message.location(lon, lat)
-    db.session.commit()
-    bot.send_message(chat_id, "Вы находитесь " + location)
+    if not one_item.items[-1]['price']:
+        one_item.items.append({'name': message.text})
+        db.session.commit()
+        bot.send_message(chat_id, "Товар " + one_item.items[-1]['name'] + " добавлен")
+        bot.send_message(chat_id, "Введите цену товара")
+        bot.register_next_step_handler(message, new_price)
+    else:
+        bot.send_message(chat_id, "Цена уже была задана")
+        bot.register_next_step_handler(message, process_choose)
 
+def new_price(message):
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    if message.text.isdigit() == True and message.text > 0:
+        one_item.items[-1]['price'] = message.text
+        db.session.commit()
+        bot.send_message(chat_id, "Цена " + one_item.items[-1]['price'] + " добавлена")
+        bot.register_next_step_handler(message, process_choose)
+    else:
+        bot.send_message(chat_id, "Введите верное значение")
+        bot.register_next_step_handler(message, new_price)
+
+def new_location(message):
+    if message.location:
+        chat_id = message.chat.id
+        one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+        one_item.location = message.location(lon, lat)
+        db.session.commit()
+        bot.send_message(chat_id, "Ваш магазин добавлен")
+        bot.register_next_step_handler(message, process_choose)
+    else: 
+        bot.send_message(chat_id, "Пришлите корректную геопозицию")
+        bot.register_next_step_handler(message, new_location)
+        
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
