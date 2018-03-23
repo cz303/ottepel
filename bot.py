@@ -173,12 +173,10 @@ def process_choose(message):
     elif message.text == 'Вывести количество товаров': 
         all_items = Item.query.filter_by(market_id=chat_id).all()
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
-        print(all_items[0])
         keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
-        print(str(all_items[1]))
         for i in range(len(all_items)):
             # keyboard.row(types.KeyboardButton(all_items[i]))
-            print(all_items[i])
+            print(str(all_items[i]))
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
