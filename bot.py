@@ -101,8 +101,7 @@ db.create_all()
 # -- Получить одну запись:
 # one_item = Ecommerce.query.filter_by(chat_id='123321').first()
 
-
-@app.route('/', methods=['GET'], subdomain="<username>")
+@app.route('/merchant/<username>', methods=['GET'])
 def index(username):
     one_item = Ecommerce.query.filter_by(domain=username).first()
     if not one_item:
