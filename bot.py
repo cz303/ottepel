@@ -137,6 +137,9 @@ def process_choose(message):
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
+	elif message.text == 'Вывести товары':
+		one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+		bot.send_message(char_id, "Ваш товар: " + one_item.items;
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
