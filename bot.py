@@ -95,8 +95,8 @@ def webhook():
 class Chat:
     def __init__(self):
         self.has_shop = None
-		self.market = None
-		self.location = None
+        self.market = None
+        self.location = None
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
@@ -143,15 +143,15 @@ def process_choose(message):
 ###### /HERE
 
 def new_market(message):
-	chat_id = message.chat.id
-	chat_dict[chat_id].market = message.text
-	bot.send_message(chat_id, "Вы ввели название " + chat_dict[chat_id].market)
-	bot.register_next_step_handler(message, process_choose)
+    chat_id = message.chat.id
+    chat_dict[chat_id].market = message.text
+    bot.send_message(chat_id, "Вы ввели название " + chat_dict[chat_id].market)
+    bot.register_next_step_handler(message, process_choose)
 
 def geolocation(message):
-	chat_id = message.chat.id
-	location = message.location(lon, lat)
-	bot.send_message(chat_id, "Вы находитесь " + location)
+    chat_id = message.chat.id
+    location = message.location(lon, lat)
+    bot.send_message(chat_id, "Вы находитесь " + location)
 
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
