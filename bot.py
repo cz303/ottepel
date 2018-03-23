@@ -88,7 +88,7 @@ def start(message):
     chat = Chat()
     if chat_id not in chat_dict:
         chat_dict[chat_id] = chat
-        bot.send_message(message.chat.id, "Привет, "+message.chat.first_name + ' ' +message.chat.last_name + '!', reply_markup=menu(message))
+        bot.send_message(message.chat.id, "Привет!", reply_markup=menu(message))
     else:
         bot.send_message(message.chat.id, "Сперва введите /start")
 
