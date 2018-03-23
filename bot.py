@@ -177,8 +177,6 @@ def process_choose(message):
             keyboard.add(*btns)
         return keyboard
     else:
-      built_keyboard = ReplyKeyboardHide()
-    else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
 
