@@ -57,15 +57,38 @@ def webhook():
 
 ###### HERE
 
+
+class Chat:
+    def __init__(self):
+        self.has_shop = None
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
+
+chat_dict = {}
+users = []
+
 def menu(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
-    markup.row(types.KeyboardButton('Вопрос-ответ'))
+    chat_id = message.chat.id
+    if not chat_dict[chat_id].has_shop:
+        markup.row(types.KeyboardButton('Создать магазин'))
+    else:
+        markup.row(types.KeyboardButton('Добавить товар'))
+        markup.row(types.KeyboardButton('Вывести товары'))
     bot.register_next_step_handler(message, process_choose)
     return markup
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, "Привет, "+message.chat.first_name + ' ' +message.chat.last_name + '!', reply_markup=menu(message))
+    chat_id = message.chat.id
+    chat = Chat()
+    if chat_id not in chat_dict:
+        chat_dict[chat_id] = chat
+        bot.send_message(message.chat.id, "Привет, "+message.chat.first_name + ' ' +message.chat.last_name + '!', reply_markup=menu(message))
+    else:
+        bot.send_message(message.chat.id, "Сперва введите /start")
 
 
 def process_choose(message):
