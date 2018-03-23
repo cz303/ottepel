@@ -4,10 +4,8 @@ import telebot
 from telebot import types
 import json
 import calendar
-
+import flask
 import logging
-import ssl
-from aiohttp import web
 
 
 API_TOKEN = '589097589:AAGaYpjDEBhWwL4Ukfn_jXnBMA69Tygrwp4'
@@ -27,8 +25,8 @@ WEBHOOK_SSL_PRIV = '/etc/dehydrated/certs/dynamic-door.ru/privkey.pem'  # Path t
 # When asked for "Common Name (e.g. server FQDN or YOUR name)" you should reply
 # with the same value in you put in WEBHOOK_HOST
 
-WEBHOOK_URL_BASE = "https://{}:{}".format(WEBHOOK_HOST, WEBHOOK_PORT)
-WEBHOOK_URL_PATH = "/{}/".format(API_TOKEN)
+WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
+WEBHOOK_URL_PATH = "/%s/" % (API_TOKEN)
 
 
 logger = telebot.logger
@@ -36,22 +34,27 @@ telebot.logger.setLevel(logging.INFO)
 
 bot = telebot.TeleBot(API_TOKEN)
 
-app = web.Application()
+app = flask.Flask(__name__)
+
+
+# Empty webserver index, return nothing, just http 200
+@app.route('/', methods=['GET', 'HEAD'])
+def index():
+    return ''
 
 
 # Process webhook calls
-@asyncio.coroutine
-def handle(request):
-    if request.match_info.get('token') == bot.token:
-        request_body_dict = await request.json()
-        update = telebot.types.Update.de_json(request_body_dict)
+@app.route(WEBHOOK_URL_PATH, methods=['POST'])
+def webhook():
+    if flask.request.headers.get('content-type') == 'application/json':
+        json_string = flask.request.get_data().decode('utf-8')
+        update = telebot.types.Update.de_json(json_string)
         bot.process_new_updates([update])
-        return web.Response()
+        return ''
     else:
-        return web.Response(status=403)
+        flask.abort(403)
 
-app.router.add_post('/{token}/', handle)
-
+###### HERE
 
 def menu(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
@@ -73,6 +76,9 @@ def process_choose(message):
         bot.reply_to(message, "Команда не распознана")
         bot.register_next_step_handler(message, process_choose)
 
+###### /HERE
+
+
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
@@ -81,15 +87,9 @@ bot.remove_webhook()
 bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
                 certificate=open(WEBHOOK_SSL_CERT, 'r'))
 
-# Build ssl context
-context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-context.load_cert_chain(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV)
-
-# Start aiohttp server
-web.run_app(
-    app,
-    host=WEBHOOK_LISTEN,
-    port=WEBHOOK_PORT,
-    ssl_context=context,
-)
+# Start flask server
+app.run(host=WEBHOOK_LISTEN,
+        port=WEBHOOK_PORT,
+        ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV),
+        debug=True)
 
