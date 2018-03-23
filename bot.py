@@ -52,14 +52,16 @@ class Ecommerce(db.Model):
     location = db.Column(db.PickleType())
     items = db.Column(db.PickleType())
     domain = db.Column(db.String(255))
+    pictures = db.Column(db.PickleType())
 
-    def __init__(self, chat_id, has_shop=False, market=None, location=None, items=[], domain=None):
+    def __init__(self, chat_id, has_shop=False, market=None, location=None, items=[], domain=None, pictures=None):
         self.chat_id = chat_id
         self.has_shop = has_shop
         self.market = market
         self.location = location
         self.items = items
         self.domain = domain
+        self.pictures = pictures
 
     def __repr__(self):
         return '<Ecommerce %r>' % self.chat_id
@@ -147,6 +149,9 @@ def process_choose(message):
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
+    elif message.text == 'Вывести товар': 
+        one_item = Ecommerce.query.filter_by(chat_id=chat_id).first() 
+        bot.send_message(char_id, "Ваш товар: " + one_item.items)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
@@ -182,7 +187,9 @@ def new_price(message):
         one_item.items[-1]['price'] = message.text
         db.session.commit()
         bot.send_message(chat_id, "Цена " + one_item.items[-1]['price'] + " добавлена")
-        bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+        bot.sent_message(chat_id, "Загрузите фото товара")
+        bot.register_next_step_handler(message, new_picture)
+        #bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
     else:
         bot.send_message(chat_id, "Введите верное значение")
         bot.register_next_step_handler(message, new_price)
@@ -206,6 +213,15 @@ def new_slug(message):
             bot.register_next_step_handler(message, new_slug)
     
 
+
+def new_picture(message):
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    file_info = bot.get_file(message.photo[0].file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+    one_item.pictures = downloaded_file
+    bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+    
 def new_location(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
