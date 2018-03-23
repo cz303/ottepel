@@ -63,7 +63,7 @@ def webhook():
 class Chat:
     def __init__(self):
         self.has_shop = None
-		self.market = None
+        self.market = None
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
@@ -99,9 +99,9 @@ def process_choose(message):
     if message.text == 'Вопрос-ответ':
         bot.send_message(chat_id, "123")
         bot.register_next_step_handler(message, process_choose)
-	elif message.text == "Создать магазин":
-		bot.send_message(chat_id, "Введите название магазина")
-		bot.register_next_step_handler(message, new_market)
+    elif message.text == "Создать магазин":
+        bot.send_message(chat_id, "Введите название магазина")
+        bot.register_next_step_handler(message, new_market)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.register_next_step_handler(message, process_choose)
@@ -109,10 +109,10 @@ def process_choose(message):
 ###### /HERE
 
 def new_market(message):
-	chat_id = message.chat.id
-	chat_dict[chat_id].market = message.text
-	bot.send_message(chat_id, "Вы ввели название" + chat_dict[chat_id].market)
-	bot.register_next_step_handler(message, process_choose)
+    chat_id = message.chat.id
+    chat_dict[chat_id].market = message.text
+    bot.send_message(chat_id, "Вы ввели название" + chat_dict[chat_id].market)
+    bot.register_next_step_handler(message, process_choose)
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
