@@ -180,6 +180,8 @@ def new_price(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     if int(message.text) > 0:
+        print(one_item.items)
+        print(one_item.items[-1])
         one_item.items[-1]['price'] = int(message.text)
         db.session.commit()
         bot.send_message(chat_id, "Цена " + one_item.items[-1]['price'] + " добавлена")
