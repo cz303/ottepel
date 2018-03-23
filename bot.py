@@ -122,7 +122,7 @@ def start(message):
         # приветственное слово
         bot.send_message(message.chat.id, "Привет!", reply_markup=menu(message))
     else:
-        bot.send_message(message.chat.id, "Сперва введите /start")
+        bot.send_message(message.chat.id, "Выберите нужный пункт меню", reply_markup=menu(message))
 
 def process_choose(message):
     chat_id = message.chat.id
