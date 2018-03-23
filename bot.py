@@ -202,7 +202,7 @@ def new_price(message):
         new_item.price = int(message.text)
         db.session.commit()
         bot.send_message(chat_id, "Цена " + str(new_item.price) + " добавлена")
-        bot.sent_message(chat_id, "Загрузите фото товара")
+        bot.send_message(chat_id, "Загрузите фото товара")
         bot.register_next_step_handler(message, new_picture)
         #bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
     else:
