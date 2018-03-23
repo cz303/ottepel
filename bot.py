@@ -46,16 +46,21 @@ db = SQLAlchemy(app)
 
 class Ecommerce(db.Model):
     chat_id = db.Column(db.String(255), unique=True)
+    has_shop = db.Column(db.Boolean, default=False, nullable=False)
+    market = db.Column(db.PickleType())
+    location = db.Column(db.PickleType())
 
-    def __init__(self, username, email):
-        self.username = username
-        self.email = email
+    def __init__(self, chat_id, has_shop=False, market=None, location=None):
+        self.chat_id = chat_id
+        self.has_shop = has_shop
+        self.market = market
+        self.location = location
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Ecommerce %r>' % self.chat_id
 
 # create table
-# db.create_all()
+db.create_all()
 
 ## СМОТРИ ТУТ!
 # --Добавляем нового чувака в базу, заполняем поля:
@@ -92,22 +97,11 @@ def webhook():
 ###### HERE
 
 
-class Chat:
-    def __init__(self):
-        self.has_shop = None
-        self.market = None
-        self.location = None
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, 
-            sort_keys=True, indent=4)
-
-chat_dict = {}
-users = []
-
 def menu(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
     chat_id = message.chat.id
-    if not chat_dict[chat_id].has_shop:
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    if not one_item.has_shop:
         markup.row(types.KeyboardButton('Создать магазин'))
     else:
         markup.row(types.KeyboardButton('Добавить товар'))
@@ -118,10 +112,13 @@ def menu(message):
 @bot.message_handler(commands=['start'])
 def start(message):
     chat_id = message.chat.id
-    chat = Chat()
-    if chat_id not in chat_dict:
-        chat_dict[chat_id] = chat
-        bot.send_message(message.chat.id, "Привет, "+message.chat.first_name + ' ' +message.chat.last_name + '!', reply_markup=menu(message))
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    if not one_item:
+        ecommerce_item = Ecommerce(chat_id)
+        db.session.add(ecommerce_item)
+        db.session.commit()
+        # приветственное слово
+        bot.send_message(message.chat.id, "Привет, !", reply_markup=menu(message))
     else:
         bot.send_message(message.chat.id, "Сперва введите /start")
 
@@ -144,13 +141,17 @@ def process_choose(message):
 
 def new_market(message):
     chat_id = message.chat.id
-    chat_dict[chat_id].market = message.text
-    bot.send_message(chat_id, "Вы ввели название " + chat_dict[chat_id].market)
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.market = message.text
+    db.session.commit()
+    bot.send_message(chat_id, "Вы ввели название " + one_item.market)
     bot.register_next_step_handler(message, process_choose)
 
 def geolocation(message):
     chat_id = message.chat.id
-    location = message.location(lon, lat)
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.location = message.location(lon, lat)
+    db.session.commit()
     bot.send_message(chat_id, "Вы находитесь " + location)
 
 
