@@ -100,11 +100,7 @@ def process_choose(message):
         bot.register_next_step_handler(message, process_choose)
 	elif message.text == 'Создать магазин':
 		bot.send_message(chat_id, "Введите название магазина")
-		if message.text == None
-			bot.send_message(chat_id, "Вы ввели пустую строку")
-			bot.register_next_step_handler(message, process_choose)
-		else	
-			bot.register_next_step_handler(message, new_market)
+		bot.register_next_step_handler(message, new_market)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.register_next_step_handler(message, process_choose)
