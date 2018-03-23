@@ -96,7 +96,7 @@ class Chat:
     def __init__(self):
         self.has_shop = None
         self.market = None
-        self.location = None
+        self.items = []
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
@@ -133,9 +133,9 @@ def process_choose(message):
     elif message.text == 'Создать магазин':
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
-    elif message.text == 'Геолокация':
-        bot.send_message(chat_id, "Ваша геолокация")
-        bot.register_next_step_handler(message, geolocation)
+    elif message.test == 'Добавить товар':
+        bot.send_message(chat_id, "Введитие название товара")
+        bot.register_next_step_handler(message, new_items)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.register_next_step_handler(message, process_choose)
@@ -148,10 +148,23 @@ def new_market(message):
     bot.send_message(chat_id, "Вы ввели название " + chat_dict[chat_id].market)
     bot.register_next_step_handler(message, process_choose)
 
-def geolocation(message):
+def new_items(message):
     chat_id = message.chat.id
-    location = message.location(lon, lat)
-    bot.send_message(chat_id, "Вы находитесь " + location)
+    chat_dict[chat_id].items.append({'name': message.text})
+    bot.send_message(chat_id, "Товар " + chat_dict[chat_id].items + " добавлен")
+    bot.send_message(chat_id, "Введите цену товара")
+    bot.register_next_step_handler(message, new_price)
+
+def new_price(message):
+    if message.text.isdigit() == True and message.test > 0:
+        chat_id = message.chat.id
+        chat_dict[chat_id].items.append({'price':message.text})
+        bot.send_message(chat_id, "Цена " + chat_dict[chat_id].items + " добавлена")
+        bot.send_message(chat_id, chat_dict[chat_id].items)
+        bot.register_next_step_handler(message, process_choose)
+    else:
+        bot.send_message(chat_id, "Введите верное значение")
+        bot.register_next_step_handler(message, new_price)
 
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
