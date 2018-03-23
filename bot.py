@@ -134,7 +134,7 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_items)
     else:
         bot.reply_to(message, "Команда не распознана")
-        bot.register_next_step_handler(message, process_choose)
+        bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
 
 ###### /HERE
 
