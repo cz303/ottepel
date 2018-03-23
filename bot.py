@@ -7,7 +7,7 @@ import calendar
 import flask
 import logging
 from time import sleep
-
+from slugify import slugify
 from config import *
 
 WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Path to the ssl certificate
@@ -51,13 +51,15 @@ class Ecommerce(db.Model):
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
     items = db.Column(db.PickleType())
+    domain = db.Column(db.String(255))
 
-    def __init__(self, chat_id, has_shop=False, market=None, location=None, items=[]):
+    def __init__(self, chat_id, has_shop=False, market=None, location=None, items=[], domain=None):
         self.chat_id = chat_id
         self.has_shop = has_shop
         self.market = market
         self.location = location
         self.items = items
+        self.domain = domain
 
     def __repr__(self):
         return '<Ecommerce %r>' % self.chat_id
@@ -80,10 +82,18 @@ db.create_all()
 # one_item = Ecommerce.query.filter_by(chat_id='123321').first()
 
 
-# Empty webserver index, return nothing, just http 200
-@app.route('/', methods=['GET', 'HEAD'])
-def index():
-    return ''
+@app.route('/', methods=['GET'], subdomain="<username>")
+def index(username):
+    one_item = Ecommerce.query.filter_by(domain=username).first()
+    if not one_item:
+        if username == '':
+            # main domain, show all
+        else:
+            # redirect to main
+            return flask.redirect("https://dynamic-door.ru/", code=302)
+    else:
+        # this is merchant's subdomain
+
 
 
 # Process webhook calls
@@ -149,8 +159,8 @@ def new_market(message):
     one_item.market = message.text
     db.session.commit()
     bot.send_message(chat_id, "Вы ввели название " + one_item.market)
-    bot.send_message(chat_id, "Введите ваш адрес:")
-    bot.register_next_step_handler(message, new_location)
+    bot.send_message(chat_id, "Введите желаемый поддомен:")
+    bot.register_next_step_handler(message, new_slug)
 
 def new_items(message):
     chat_id = message.chat.id
@@ -176,6 +186,25 @@ def new_price(message):
     else:
         bot.send_message(chat_id, "Введите верное значение")
         bot.register_next_step_handler(message, new_price)
+
+def new_slug(message):
+    chat_id = message.chat.id
+    domain_item = Ecommerce.query.filter_by(domain=domain).first()
+    if domain_item:
+        bot.send_message(chat_id, "Такое доменное имя уже занято :( Введите другое:")
+        bot.register_next_step_handler(message, new_slug)
+    else:
+        r = slugify(txt)
+        if r == txt:
+            one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+            one_item.domain = r
+            db.session.commit()
+            bot.send_message(chat_id, "ОК! Введите адрес вашего магазина:")
+            bot.register_next_step_handler(message, new_location)
+        else:
+            bot.send_message(chat_id, "Используйте только латинские символы! Повторите ввод:")
+            bot.register_next_step_handler(message, new_slug)
+    
 
 def new_location(message):
     chat_id = message.chat.id
