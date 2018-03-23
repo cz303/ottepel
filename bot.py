@@ -147,7 +147,8 @@ def new_market(message):
     one_item.market = message.text
     db.session.commit()
     bot.send_message(chat_id, "Вы ввели название " + one_item.market)
-    bot.register_next_step_handler(message, process_choose)
+    bot.send_message(chat_id, "Пришлите вашу геопозицию")
+    bot.register_next_step_handler(message, new_location)
 
 def new_items(message):
     chat_id = message.chat.id
