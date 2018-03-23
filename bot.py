@@ -77,7 +77,6 @@ def menu(message):
     chat_id = message.chat.id
     if not chat_dict[chat_id].has_shop:
         markup.row(types.KeyboardButton('Создать магазин'))
-		markup.row(types.KeyboardButton('Геолокация'))
     else:
         markup.row(types.KeyboardButton('Добавить товар'))
         markup.row(types.KeyboardButton('Вывести товары'))
