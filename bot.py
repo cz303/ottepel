@@ -51,6 +51,7 @@ class Ecommerce(db.Model):
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
     items = db.Column(db.PickleType())
+    pictures = db.Column(db.PickleType())
 
     def __init__(self, chat_id, has_shop=False, market=None, location=None, items=[]):
         self.chat_id = chat_id
@@ -177,7 +178,8 @@ def new_price(message):
         db.session.commit()
         bot.send_message(chat_id, "Цена " + one_item.items[-1]['price'] + " добавлена")
         bot.sent_message(chat_id, "Загрузите фото товара")
-        bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+        bot.register_next_step_handler(message, new_picture)
+        #bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
     else:
         bot.send_message(chat_id, "Введите верное значение")
         bot.register_next_step_handler(message, new_price)
@@ -185,8 +187,11 @@ def new_price(message):
 def new_picture(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-
-
+    file_info = bot.get_file(message.photo[0].file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+    one_item.pictures = downloaded_file
+    bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+    
 def new_location(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
