@@ -8,7 +8,7 @@ import flask
 import logging
 from time import sleep
 
-API_TOKEN = '589097589:AAGaYpjDEBhWwL4Ukfn_jXnBMA69Tygrwp4'
+API_TOKEN = '522766611:AAE0Yv-fxf35pAk_bU4MIzZtfPPym4Z4DpM'
 
 WEBHOOK_HOST = 'dynamic-door.ru'
 WEBHOOK_PORT = 8443  # 443, 80, 88 or 8443 (port need to be 'open')
