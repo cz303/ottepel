@@ -40,6 +40,7 @@ app = web.Application()
 
 
 # Process webhook calls
+@asyncio.coroutine
 async def handle(request):
     if request.match_info.get('token') == bot.token:
         request_body_dict = await request.json()
