@@ -357,8 +357,8 @@ def new_category(message):
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     msg = message.text
     if msg == 'Создать категорию':
-        bot.send_message(chat_id, "Введите новую категорию")
-        item = chat_category.query.filter_by(message.text=chat_category).first()
+        msg = bot.send_message(chat_id, "Введите новую категорию")
+        item = chat_category.query.filter_by(msg=chat_category).first()
         if item:
             bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
             bot.register_next_step_handler(message, new_category)
