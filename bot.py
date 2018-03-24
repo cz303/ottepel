@@ -5,6 +5,7 @@ from telebot import types
 import json
 import calendar
 import flask
+import hashlib
 import logging
 from time import sleep
 from slugify import slugify
@@ -54,6 +55,10 @@ class Ecommerce(db.Model):
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
     domain = db.Column(db.String(255))
+    api_bot = db.Column(db.String(255))
+    pkey1 = db.Column(db.String(255))
+    pkey2 = db.Column(db.String(255))
+    merchant_id = db.Column(db.String(255))
 
     def __init__(self, chat_id, has_shop=False, market=None, location=None, domain=None):
         self.chat_id = chat_id
@@ -103,18 +108,45 @@ class Orders(db.Model):
     item_id = db.Column(db.Integer)
     paid = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, name=''):
-        self.name = name
+    def __init__(self, chat_id='', market_id=0, item_id=0):
+        self.chat_id = chat_id
+        self.market_id = market_id
+        self.item_id = item_id
 
     def __repr__(self):
         return '<Order for %r>' % self.chat_id
 
 
 chat_dict ={}
-chat_category={'первая категория', '2 категория', '3 категория'}
+chat_category={'Автомобили', 'Хобби', 'Чушь', 'и ещё', 'куча', 'всяких', 'категорий'}
 # create table
 db.create_all()
 
+
+def get_pay_link(my_key, merchant_id, order_id, amount):
+    data = {
+        "request":{
+            "order_id": order_id,
+            "order_desc": "Оплата через eMarketBot",
+            "currency":"RUB",
+            "amount":amount,
+            "merchant_id":merchant_id
+        }
+    }
+    assert 'request' in data.keys()
+    keys = sorted(data['request'].keys())
+    values = [my_key]
+    values += [data['request'][key] for key in keys]
+    raw = '|'.join(values)
+    data['request']['signature'] = hashlib.sha1(raw.encode('utf-8')).hexdigest()
+
+    encoded_body = json.dumps(data)
+    http = urllib3.PoolManager()
+    r = http.request('POST', 'https://api.fondy.eu/api/checkout/redirect/',
+        headers={'Content-Type': 'application/json'},
+        body=encoded_body)
+
+    return r.read()
 
 ## СМОТРИ ТУТ!
 # --Добавляем нового чувака в базу, заполняем поля:
@@ -142,19 +174,16 @@ def category(catid):
     return flask.render_template('category.html', category=category, products=products)
 
 @app.route('/buy', methods=['POST'])
-def buy(username):
-
-    one_item = Ecommerce.query.filter_by(domain=username).first()
-    if not one_item:
-        if username == '':
-            # main domain, show all
-            return '123'
-        else:
-            # redirect to main
-            return flask.redirect("https://85.143.209.253:8443/", code=302)
-    else:
-        # this is merchant's subdomain
-        return username
+def buy():
+    item_id = request.form.get('item')
+    chat_id = request.form.get('chat_id')
+    one_item = Item.query.filter_by(id=item_id).first()
+    one_market = Ecommerce.query.filter_by(id=one_item.market_id).first()
+    new_order = Orders(chat_id, one_item.market_id, one_item.id)
+    db.session.add(new_order)
+    db.session.commit()
+    pay_link = get_pay_link(one_market.pkey1, one_market.merchant_id, new_order.id, one_item.price)
+    return pay_link
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
@@ -222,10 +251,10 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        new_cat = keyboard.add(*[types.KeyboardButton('Создать категорию')])
         for n in chat_category:
             keyboard.add(*[types.KeyboardButton('Категория: ' + n)])
-            # bot.send_message(message.chat.id, n)
-        bot.send_message(chat_id, "Введитие категорию товара")
+        bot.send_message(message.chat.id, 'Выберите нужную категорию, если её нет, то создайте', reply_markup=keyboard)
         bot.register_next_step_handler(message, new_category)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
@@ -272,15 +301,17 @@ def new_market(message):
 
 def new_category(message):
     chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.category = message.text
-    one_item.category = Category.filter_by(Category=message.text)
-    if one_item.category:
-        bot.send_message(chat_id, "Такая категория уже существует")
-        bot.register_next_step_handler(message, process_choose)
+    if one_item.category == 'Создать категорию':
+        bot.send_message(chat_id, "Введите новую категорию")
+        # for n in chat_category:
+        #     if message.text == n:
+        #         bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
+        #         bot.register_next_step_handler(message, new_category)
+        #     else:
+        #         bot.send_message(chat_id, "Данная категория создана!")
     else:
-        db.session.commit()
-        bot.send_message(chat_id, "Вы создали новую категорию - " + one_item.category_id)
-        bot.send_message(chat_id, "Введитие название товара")
         bot.register_next_step_handler(message, new_items)
 
 def new_items(message):
