@@ -220,6 +220,7 @@ def menu(message):
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     if not one_item.has_shop:
         markup.row(types.KeyboardButton('Создать магазин'))
+        markup.row(types.KeyboardButton('Посмотреть все магазины'))
     else:
         markup.row(types.KeyboardButton('Получить информацию о магазине'))
         markup.row(types.KeyboardButton('Добавить товар'))
@@ -250,6 +251,13 @@ def process_choose(message):
     if message.text == 'Создать магазин':
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
+    elif message.text == 'Посмотреть все магазины':
+        all_ = Ecommerce.query.all()
+        string = ''
+            for item in all_:
+                string +='Магазин #'+item.domain + '\n'
+        bot.send_message(chat_id, string)
+        bot.register_next_step_handler(message,)
     elif message.text == 'Добавить товар':
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         new_cat = keyboard.add(*[types.KeyboardButton('Создать категорию')])
@@ -284,6 +292,7 @@ def process_choose(message):
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
 
+
 def menu_settings(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, selective=True)
     markup.row(types.KeyboardButton('api_bot - ключ из BotFather'))
@@ -294,6 +303,15 @@ def menu_settings(message):
     bot.register_next_step_handler(message, process_settings)
     return markup
 
+def lol (message):
+    chat_id = message.chat.id
+    kg = message.text[1:]
+    item = Ecommerce.query.filter_by(domain=kg).first()
+    if item:
+        #
+    else:
+        bot.send_message(chat_id, "Такого магазина нет")
+        bot.register_next_step_handler(message, menu)
 
 def process_settings(message):
     chat_id = message.chat.id
