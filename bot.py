@@ -17,7 +17,7 @@ WEBHOOK_SSL_PRIV = '/etc/dehydrated/certs/dynamic-door.ru/privkey.pem'  # Path t
 
 #WEBHOOK_SSL_CERT = './server.crt'  # Path to the ssl certificate
 #WEBHOOK_SSL_PRIV = './server.key'  # Path to the ssl private key
-
+WEBHOOK_HOST = 'dynamic-door.ru'
 # Quick'n'dirty SSL certificate generation:
 #
 # openssl genrsa -out webhook_pkey.pem 2048
