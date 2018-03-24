@@ -12,7 +12,7 @@ $(document).ready(function(){
 				type: "POST",
 				url: "/buy",	
 				data: {
-					'price': $(this).closest('.product').find('.id').val(),
+					'item': $(this).closest('.product').find('.id').val(),
 					'phone': result.value
 				},
 				success: function(data){
