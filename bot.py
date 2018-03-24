@@ -195,6 +195,8 @@ def menu(message):
         markup.row(types.KeyboardButton('Добавить товар'))
         if Item.query.filter_by(market_id=chat_id).first():
             markup.row(types.KeyboardButton('Список товаров'))
+        elif Orders.query.filter_by(market_id=chat_id).all()
+            markup.row(types.KeyboardButton('Список заказов'))
         #markup.row(types.KeyboardButton('Вывести количество товаров'))
     bot.register_next_step_handler(message, process_choose)
     return markup
@@ -240,6 +242,12 @@ def process_choose(message):
         list_items = Item.query.filter_by(market_id=chat_id).all()
         markup = items_slider(chat_id, list_items, next_id)
         r = http.request('GET', str(list_items[next_id].picture))
+        bot.send_photo(chat_id, r.data, reply_markup=markup)
+    elif message.text == 'Список заказов':
+        next_id = 0
+        list_orders = Orders.query.filter_by(market_id=chat_id).all()
+        markup = items_slider(chat_id, list_orders, next_id)
+        r = http.request('GET', str(list_orders[next_id].picture))
         bot.send_photo(chat_id, r.data, reply_markup=markup)
     else:
         bot.reply_to(message, "Команда не распознана")
