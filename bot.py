@@ -235,7 +235,7 @@ def process_choose(message):
     #    all_items = Item.query.filter_by(market_id=chat_id).all()
     #    bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
     #    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)        
-    #    for i in range(len(all_items)):
+    #    for i in range(len(all_items)):    
     #        keyboard.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))])
     #        #+ bot.send_photo(chat_id, all_items[i].picture))])
     #    bot.send_message(message.chat.id, 'ваш товар', reply_markup=keyboard)
@@ -251,6 +251,11 @@ def process_choose(message):
         markup = items_slider(chat_id, list_orders, next_id)
         r = http.request('GET', str(list_orders[next_id].picture))
         bot.send_photo(chat_id, r.data, reply_markup=markup)
+    elif message.text == 'Заполнить опциональные поля':
+        bot.send_message(chat_id, "Введите api_bot - ключ из BotFather")
+        bot.send_message(chat_id, "Введите pkey1 со страницы https://portal.fondy.eu/mportal/#/settings/")
+        bot.send_message(chat_id, "Введите pkey2 со страницы https://portal.fondy.eu/mportal/#/settings/")
+        bot.send_message(chat_id, "Введите Merchant id со страницы https://portal.fondy.eu/mportal/#/settings/")
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
