@@ -228,8 +228,7 @@ def new_market(message):
 
 def new_category(message):
     chat_id = message.chat.id
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    one_item.category = message.text
+    new_item = Item('', message.text, 0, None, chat_id)
     db.session.commit()
     print(one_item.category)
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
