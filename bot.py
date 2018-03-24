@@ -224,9 +224,9 @@ def menu(message):
         markup.row(types.KeyboardButton('Добавить товар'))
         if Item.query.filter_by(market_id=chat_id).first():
             markup.row(types.KeyboardButton('Список товаров'))
-        elif Orders.query.filter_by(market_id=chat_id).all():
+        if Orders.query.filter_by(market_id=chat_id).first():
             markup.row(types.KeyboardButton('Список заказов'))
-        #markup.row(types.KeyboardButton('Вывести количество товаров'))
+        markup.row(types.KeyboardButton('Настройки'))
     bot.register_next_step_handler(message, process_choose)
     return markup
 
@@ -260,14 +260,6 @@ def process_choose(message):
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
-    #elif message.text == 'Вывести количество товаров': 
-    #    all_items = Item.query.filter_by(market_id=chat_id).all()
-    #    bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
-    #    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)        
-    #    for i in range(len(all_items)):    
-    #        keyboard.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))])
-    #        #+ bot.send_photo(chat_id, all_items[i].picture))])
-    #    bot.send_message(message.chat.id, 'ваш товар', reply_markup=keyboard)
     elif message.text == 'Список товаров':
         next_id = 0
         list_items = Item.query.filter_by(market_id=chat_id).all()
@@ -275,21 +267,85 @@ def process_choose(message):
         r = http.request('GET', str(list_items[next_id].picture))
         bot.send_photo(chat_id, r.data, reply_markup=markup)
     elif message.text == 'Список заказов':
-        next_id = 0
         list_orders = Orders.query.filter_by(market_id=chat_id).all()
-        markup = items_slider(chat_id, list_orders, next_id)
-        r = http.request('GET', str(list_orders[next_id].picture))
-        bot.send_photo(chat_id, r.data, reply_markup=markup)
-    elif message.text == 'Заполнить опциональные поля':
-        bot.send_message(chat_id, "Введите api_bot - ключ из BotFather")
-        bot.send_message(chat_id, "Введите pkey1 со страницы https://portal.fondy.eu/mportal/#/settings/")
-        bot.send_message(chat_id, "Введите pkey2 со страницы https://portal.fondy.eu/mportal/#/settings/")
-        bot.send_message(chat_id, "Введите Merchant id со страницы https://portal.fondy.eu/mportal/#/settings/")
+        string = ''
+        for order in list_orders:
+            item = Orders.query.filter_by(market_id=order.item_id).first()
+            if order.paid:
+                string += 'Оплаченный заказ #'+order.chat_id+' от @'+str(order.chat_id)+' '+str(order.datetime)+', товар: '+item.name+' за '+str(item.price)+'\n'
+            else:
+                string += 'НЕоплаченный заказ #'+order.chat_id+' от @'+str(order.chat_id)+' '+str(order.datetime)+', товар: '+item.name+' за '+str(item.price)+'\n'
+        bot.send_message(chat_id, string, reply_markup=markup)
+    elif message.text == 'Настройки':
+        bot.send_message(chat_id, "Выберите нужный пункт настроек", reply_markup=menu_settings(message))
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
 
-###### /HERE
+def menu_settings(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, selective=True)
+    markup.row(types.KeyboardButton('api_bot - ключ из BotFather'))
+    markup.row(types.KeyboardButton('Платежная система - pkey1'))
+    markup.row(types.KeyboardButton('Платежная система - pkey2'))
+    markup.row(types.KeyboardButton('Платежная система - Merchant id'))
+    markup.row(types.KeyboardButton('Выйти'))
+    bot.register_next_step_handler(message, process_settings)
+    return markup
+
+
+def process_settings(message):
+    chat_id = message.chat.id
+    if message.text == 'api_bot - ключ из BotFather':
+        bot.send_message(chat_id, "Введите значение")
+        bot.register_next_step_handler(message, change_key)
+    elif message.text == 'Платежная система - pkey1':
+        bot.send_message(chat_id, "Введите значение")
+        bot.register_next_step_handler(message, change_pkey1)
+    elif message.text == 'Платежная система - pkey2':
+        bot.send_message(chat_id, "Введите значение")
+        bot.register_next_step_handler(message, change_pkey2)
+    elif message.text == 'Платежная система - Merchant id':
+        bot.send_message(chat_id, "Введите значение")
+        bot.register_next_step_handler(message, change_merchant_id)
+    elif message.text == 'Выйти':
+        bot.send_message(message.chat.id, "Выберите нужный пункт меню", reply_markup=menu(message))
+    else:
+        bot.reply_to(message, "Команда не распознана")
+        bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu_settings(message))
+
+'''api_bot = db.Column(db.String(255))
+    pkey1 = db.Column(db.String(255))
+    pkey2 = db.Column(db.String(255))
+    merchant_id = db.Column(db.String(255))'''
+def change_key(message):
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.api_bot = message.text
+    db.session.commit()
+    bot.send_message(chat_id, "Сохранено! Выберите нужный пункт меню", reply_markup=menu_settings(message))
+
+def change_pkey1(message):
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.pkey1 = message.text
+    db.session.commit()
+    bot.send_message(chat_id, "Сохранено! Выберите нужный пункт меню", reply_markup=menu_settings(message))
+
+def change_pkey2(message):
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.pkey2 = message.text
+    db.session.commit()
+    bot.send_message(chat_id, "Сохранено! Выберите нужный пункт меню", reply_markup=menu_settings(message))
+
+def change_merchant_id(message):
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.merchant_id = message.text
+    db.session.commit()
+    bot.send_message(chat_id, "Сохранено! Выберите нужный пункт меню", reply_markup=menu_settings(message))
+
+
 def new_market(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
