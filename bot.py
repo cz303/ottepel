@@ -104,7 +104,7 @@ class Orders(db.Model):
     paid = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, name=''):
-        # self.name = name
+        self.name = name
 
     def __repr__(self):
         return '<Order for %r>' % self.chat_id
