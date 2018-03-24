@@ -87,6 +87,7 @@ class Item(db.Model):
 # create table
 db.create_all()
 
+chat_dict = {}
 ## СМОТРИ ТУТ!
 # --Добавляем нового чувака в базу, заполняем поля:
 # ecommerce_item = Ecommerce('admin', 'admin@example.com')
@@ -176,6 +177,11 @@ def process_choose(message):
         keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
         for i in range(len(all_items)):
             keyboard.row(types.InlineKeyboardButton)
+    elif message.text == 'Список товаров':
+        next_id = 0
+        list_items = Item.query.filter_by(market_id=chat_id).all()
+        markup = items_slider(chat_id, list_items, next_id)
+        bot.send_message(chat_id, "Товар", reply_markup=markup)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
@@ -251,6 +257,45 @@ def new_location(message):
     db.session.commit()
     bot.send_message(chat_id, "Ваш магазин добавлен. Магазин '"+one_item.market+ "' по адресу '"+ one_item.location+"'")
     bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+
+def items_slider(chat_id, list_items, item_id):
+    markup = types.InlineKeyboardMarkup()
+    row=[]
+    row.append(types.InlineKeyboardButton("Товары",callback_data="ignore"))
+    markup.row(*row)
+    row=[]
+    if len(list_items) > item_id:
+        chat_dict[chat_id] = 0
+        item_id = 0
+    elif item_id < 0:
+        chat_dict[chat_id] = len(list_items) - 1
+        item_id = len(list_items) - 1
+    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name, callback_data="ignore"))
+    
+    markup.row(*row)
+    row=[]
+    row.append(types.InlineKeyboardButton("<",callback_data="previous-item"))
+    row.append(types.InlineKeyboardButton("В меню",callback_data="to_menu"))
+    row.append(types.InlineKeyboardButton("Редактировать",callback_data="edit"))
+    row.append(types.InlineKeyboardButton(">",callback_data="next-item"))
+    markup.row(*row)
+    return markup
+
+@bot.callback_query_handler(func=lambda call: call.data == 'next-item')
+def next_item(call):
+    chat_id = call.message.chat.id
+    list_items = Item.query.filter_by(market_id=chat_id).all()
+    markup = items_slider(chat_id, list_items, chat_dict[chat_id]+1)
+    bot.edit_message_text("Товары", call.from_user.id, call.message.message_id, reply_markup=markup)
+    bot.answer_callback_query(call.id, text="")
+
+@bot.callback_query_handler(func=lambda call: call.data == 'previous-item')
+def previous_item(call):
+    chat_id = call.message.chat.id
+    list_items = Item.query.filter_by(market_id=chat_id).all()
+    markup = items_slider(chat_id, list_items, chat_dict[chat_id]-1)
+    bot.edit_message_text("Товары", call.from_user.id, call.message.message_id, reply_markup=markup)
+    bot.answer_callback_query(call.id, text="")
 
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
