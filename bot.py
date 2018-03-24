@@ -212,17 +212,23 @@ def new_items(message):
 def new_price(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    if int(message.text) > 0:
-        new_item = Item.query.filter_by(filled=False, market_id=chat_id).first()
-        new_item.price = int(message.text)
-        db.session.commit()
-        bot.send_message(chat_id, "Цена " + str(new_item.price) + " добавлена")
-        bot.send_message(chat_id, "Загрузите фото товара")
-        bot.register_next_step_handler(message, new_picture)
-        #bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
-    else:
+    try:
+        a = int(message.text)
+    except ValueError:
         bot.send_message(chat_id, "Введите верное значение")
         bot.register_next_step_handler(message, new_price)
+    else:
+        if a > 0:
+            new_item = Item.query.filter_by(filled=False, market_id=chat_id).first()
+            new_item.price = int(message.text)
+            db.session.commit()
+            bot.send_message(chat_id, "Цена " + str(new_item.price) + " добавлена")
+            bot.send_message(chat_id, "Загрузите фото товара")
+            bot.register_next_step_handler(message, new_picture)
+            #bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+        else:
+            bot.send_message(chat_id, "Введите верное значение")
+            bot.register_next_step_handler(message, new_price)
 
 def new_slug(message):
     chat_id = message.chat.id
