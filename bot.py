@@ -354,7 +354,7 @@ def new_market(message):
     bot.send_message(chat_id, "Введите желаемый поддомен:")
     bot.register_next_step_handler(message, new_slug)
 
-ef new_category(message):
+def new_category(message):
     chat_id = message.chat.id
     msg = str(message.text)
     if msg == 'Создать категорию':
