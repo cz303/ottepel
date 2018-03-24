@@ -378,8 +378,8 @@ def change_price(message):
         if a > 0:
             one_item.price = a
             db.session.commit()
-            bot.send_message(chat_id, "Цена изменено.")
-            bot.register_next_step_handler(message, change_price)
+            bot.send_message(chat_id, "Цена изменена.")
+            bot.register_next_step_handler(message, menu)
         else:
             bot.send_message(chat_id, "Введите верное значение")
             bot.register_next_step_handler(message, change_price)
