@@ -325,13 +325,13 @@ def previous_item(call):
 def to_menu(call):
     bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
 
+
 @bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
 def edit_1(call):
     bot.send_message(call.message.chat.id, "Выберите поле для редактирования"+call.data[4:], reply_markup=menu(call.message))
         row.append(types.InlineKeyboardButton("Название", ))
         row.append(types.InlineKeyboardButton("Цена", ))
         row.append(types.InlineKeyboardButton("Картинка", ))
-
 
 # TRY_!
     
