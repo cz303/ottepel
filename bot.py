@@ -251,7 +251,8 @@ def new_slug(message):
 def new_picture(message):
     chat_id = message.chat.id
     new_item = Item.query.filter_by(filled=False, market_id=chat_id).first()
-    file_info = bot.get_file(message.photo[0].file_id)
+    print(message.photo)
+    file_info = bot.get_file(message.photo.file_id)
     downloaded_file = 'https://api.telegram.org/file/bot' + API_TOKEN + '/' + file_info.file_path
     print(downloaded_file)
     new_item.picture = downloaded_file
