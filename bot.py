@@ -111,7 +111,7 @@ class Orders(db.Model):
 
 
 chat_dict ={}
-chat_category={'первая категория'}
+chat_category={'name':'первая категория'}
 # create table
 db.create_all()
 
@@ -222,10 +222,10 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
         bot.send_message(chat_id, "Введитие категорию товара")
-        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)   
-        for i in range(len(chat_category)):
-            keyboard.add(*[types.KeyboardButton('Название товара: ' + chat_category[i])])
-        bot.register_next_step_handler(message, new_category)
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        items = chat_category.query.all()
+        for i in items:
+        	print(i.name)
         # bot.send_message(chat_id, "Введитие название товара")
         # bot.register_next_step_handler(message, new_items)
     elif message.text == 'Получить информацию о магазине':
