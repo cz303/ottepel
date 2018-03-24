@@ -317,7 +317,7 @@ def items_slider(chat_id, list_items, item_id):
     if next_id > len(list_items) - 1:
         next_id = 0
 
-    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + list_items[item_id].category_id, callback_data="ignore"))
+    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + str(list_items[item_id].category_id), callback_data="ignore"))
 
     markup.row(*row)
     row=[]
