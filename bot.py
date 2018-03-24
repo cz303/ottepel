@@ -338,10 +338,12 @@ def edit(call):
 @bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
 def edit_1(call):
     bot.send_message(call.message.chat.id, "Выберите поле для редактирования"+call.data[4:], reply_markup=menu(call.message))
+    markup = types.InlineKeyboardMarkup()
     row.append(types.InlineKeyboardButton("Название", ))
     row.append(types.InlineKeyboardButton("Цена", ))
     row.append(types.InlineKeyboardButton("Картинка", ))
-
+    markup.row(*row)
+    return markup
 # TRY_!
     
 def edit(message):
@@ -351,7 +353,7 @@ def edit(message):
     row.append(types.InlineKeyboardButton("Название"))
     row.append(types.InlineKeyboardButton("Цена"))
     row.append(types.InlineKeyboardButton("Картинка"))
-return markup
+    return markup
 # END
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
