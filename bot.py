@@ -278,7 +278,6 @@ def new_category(message):
             else:
                 bot.send_message(chat_id, "Данная категория создана!")
     else:
-        bot.send_message(chat_id, "ваша категория")
         bot.register_next_step_handler(message, new_items)
 
 def new_items(message):
