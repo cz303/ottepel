@@ -50,14 +50,14 @@ db = SQLAlchemy(app)
 
 class Ecommerce(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    chat_id = db.Column(db.String(255), unique=True)
+    chat_id = db.Column(db.String(191), unique=True)
     has_shop = db.Column(db.Boolean, default=False, nullable=False)
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
-    domain = db.Column(db.String(255))
-    pkey1 = db.Column(db.String(255))
-    pkey2 = db.Column(db.String(255))
-    merchant_id = db.Column(db.String(255))
+    domain = db.Column(db.String(191))
+    pkey1 = db.Column(db.String(191))
+    pkey2 = db.Column(db.String(191))
+    merchant_id = db.Column(db.String(191))
 
     def __init__(self, chat_id, has_shop=False, market=None, location=None, domain=None):
         self.chat_id = chat_id
@@ -71,7 +71,7 @@ class Ecommerce(db.Model):
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    name = db.Column(db.String(191))
     price = db.Column(db.Integer)
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
@@ -91,7 +91,7 @@ class Item(db.Model):
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    name = db.Column(db.String(191))
     
     def __init__(self, name=''):
         self.name = name
@@ -101,7 +101,7 @@ class Category(db.Model):
 
 class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    chat_id = db.Column(db.String(255))
+    chat_id = db.Column(db.String(191))
     market_id = db.Column(db.Integer)
     datetime = db.Column(db.DateTime, default=datetime.datetime.utcnow())
     item_id = db.Column(db.Integer)
