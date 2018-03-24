@@ -344,6 +344,8 @@ def edit_menu(message, item_num):
     chat_dict[chat_id] = item_num
     markup.row(types.KeyboardButton('Редактировать имя'))
     markup.row(types.KeyboardButton('Редактировать цену'))
+    markup.row(types.KeyboardButton('Изменить картинку'))
+    markup.row(types.KeyboardButton('В меню'))
     bot.register_next_step_handler(message, process_edit)
     return markup
 
@@ -357,6 +359,11 @@ def process_edit(message):
     elif message.text == 'Редактировать цену':
         bot.send_message(chat_id, "Введитие новую цену")
         bot.register_next_step_handler(message, change_price)
+    elif message.text == 'Изменить картинку':
+        bot.send_message(chat_id, "Загрузите новую картинку")
+        bot.register_next_step_handler(message, change_picture)
+    elif message.text == 'В меню':
+         bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
@@ -367,7 +374,7 @@ def change_item(message):
     one_item = Item.query.filter_by(id=item_num).first()
     one_item.name = message.text
     db.session.commit()
-    bot.send_message(chat_id, "Название изменено. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
+    bot.send_message(chat_id, "Название изменено. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num)) 
 
 def change_price(message):
     chat_id = message.chat.id
@@ -382,12 +389,26 @@ def change_price(message):
         if a > 0:
             one_item.price = a
             db.session.commit()
-            bot.send_message(chat_id, "Цена изменено. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
-            #bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+            bot.send_message(chat_id, "Цена изменена. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
         else:
             bot.send_message(chat_id, "Введите верное значение")
             bot.register_next_step_handler(message, change_price)
 
+def change_picture(message):
+    chat_id = message.chat.id
+    item_num = chat_dict[chat_id]
+    one_item = Item.query.filter_by(id=item_num).first()
+    if message.photo:
+        file_info = bot.get_file(message.photo[-1].file_id)
+        downloaded_file = 'https://api.telegram.org/file/bot' + API_TOKEN + '/' + file_info.file_path
+        print(downloaded_file)
+        one_item.picture = downloaded_file
+        one_item.filled = True
+        db.session.commit()
+        bot.send_message(chat_id, "Картинка изменена. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
+    else:
+        bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
+        bot.register_next_step_handler(message, new_picture)
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
