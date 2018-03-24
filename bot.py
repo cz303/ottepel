@@ -177,7 +177,7 @@ def process_choose(message):
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)        
         for i in range(len(all_items)):
-            keyboard.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))#+ bot.send_photo(chat_id, all_items[i].picture))])
+            keyboard.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price)))#+ bot.send_photo(chat_id, all_items[i].picture))])
         bot.send_message(message.chat.id, 'ваш товар', reply_markup=keyboard)
     elif message.text == 'Список товаров':
         next_id = 0
