@@ -181,17 +181,16 @@ def pay(oid):
     ecommerce = Ecommerce.query.filter_by(chat_id=item.market_id).first()
     return flask.render_template('pay.html', item=item, ecommerce=ecommerce)
 
-'''@app.route('/buy', methods=['POST'])
+@app.route('/buy', methods=['POST'])
 def buy():
     item_id = request.form.get('item')
-    chat_id = request.form.get('chat_id')
+    chat_id = request.form.get('phone')
     one_item = Item.query.filter_by(id=item_id).first()
     one_market = Ecommerce.query.filter_by(id=one_item.market_id).first()
     new_order = Orders(chat_id, one_item.market_id, one_item.id)
     db.session.add(new_order)
     db.session.commit()
-    pay_link = get_pay_link(one_market.pkey1, one_market.merchant_id, new_order.id, one_item.price)
-    return pay_link '''
+    return 'https://dynamic-door.ru/pay/'+new_order.id
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
