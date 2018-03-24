@@ -12,12 +12,12 @@ from config import *
 import urllib3
 http = urllib3.PoolManager()
 
-WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Path to the ssl certificate
+WEBHOOK_SSL_CERT = '/etc/dehydrated/certs/dynamic-door.ru/fullchain.pem'  # Path to the ssl certificate
 WEBHOOK_SSL_PRIV = '/etc/dehydrated/certs/dynamic-door.ru/privkey.pem'  # Path to the ssl private key
 
-WEBHOOK_SSL_CERT = './server.crt'  # Path to the ssl certificate
-WEBHOOK_SSL_PRIV = './server.key'  # Path to the ssl private key
-
+#WEBHOOK_SSL_CERT = './server.crt'  # Path to the ssl certificate
+#WEBHOOK_SSL_PRIV = './server.key'  # Path to the ssl private key
+WEBHOOK_HOST = 'dynamic-door.ru'
 # Quick'n'dirty SSL certificate generation:
 #
 # openssl genrsa -out webhook_pkey.pem 2048
@@ -26,7 +26,7 @@ WEBHOOK_SSL_PRIV = './server.key'  # Path to the ssl private key
 # When asked for "Common Name (e.g. server FQDN or YOUR name)" you should reply
 # with the same value in you put in WEBHOOK_HOST
 
-WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
+WEBHOOK_URL_BASE = "https://%s" % (WEBHOOK_HOST)
 WEBHOOK_URL_PATH = "/%s/" % (API_TOKEN)
 
 
@@ -35,7 +35,7 @@ telebot.logger.setLevel(logging.INFO)
 
 bot = telebot.TeleBot(API_TOKEN, threaded=False)
 
-app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_url_path='/static')
 
 
 ###### DB
@@ -72,22 +72,39 @@ class Item(db.Model):
     price = db.Column(db.Integer)
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
+    category_id = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
+<<<<<<< HEAD
     def __init__(self, name='', category ='',price=0, picture=None, market_id=0, filled=False):
+=======
+    def __init__(self, name='', price=0, picture=None, market_id=0, category_id=0, filled=False):
+>>>>>>> 318cb8a56af1eedc18afc13d49f0d56ad90c8aac
         self.name = name
         self.category = category
         self.price = price
         self.picture = picture
         self.market_id = market_id
         self.filled = filled
+        self.category_id = category_id
 
     def __repr__(self):
         return '<Item #%r>' % self.id
 
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    
+    def __init__(self, name=''):
+        self.name = name
+
+    def __repr__(self):
+        return '<Category %r>' % self.name
+
 chat_dict ={}
 # create table
 db.create_all()
+
 
 ## СМОТРИ ТУТ!
 # --Добавляем нового чувака в базу, заполняем поля:
@@ -104,7 +121,15 @@ db.create_all()
 # one_item = Ecommerce.query.filter_by(chat_id='123321').first()
 @app.route('/', methods=['GET'])
 def mainw():
-    return '123'
+    categories = Category.query.all()
+    products = Item.query.all()
+    return flask.render_template('index.html', categories=categories, products=products)
+
+@app.route('/category/<catid>', methods=['GET'])
+def category(catid):
+    category = Category.query.filter_by(category_id=catid).first()
+    products = Item.query.filter_by(category_id=category.id).all()
+    return flask.render_template('category.html', category=category, products=products)
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
@@ -204,16 +229,6 @@ def new_market(message):
     bot.send_message(chat_id, "Вы ввели название " + one_item.market)
     bot.send_message(chat_id, "Введите желаемый поддомен:")
     bot.register_next_step_handler(message, new_slug)
-
-def new_category(message):
-    chat_id = message.chat.id
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    one_item.category = message.text
-    db.session.commit()
-    print(one_item.category)
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    bot.send_message(chat_id, "Введитие название товара")
-    bot.register_next_step_handler(message, new_items)
 
 def new_items(message):
     chat_id = message.chat.id
@@ -423,11 +438,10 @@ def change_picture(message):
 bot.remove_webhook()
 sleep(1)
 # Set webhook
-bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
-                certificate=open(WEBHOOK_SSL_CERT, 'r'))
+bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH)#,certificate=open(WEBHOOK_SSL_CERT, 'r'))
 
 # Start flask server
-app.run(host=WEBHOOK_LISTEN,
+app.run(host='127.0.0.1',
         port=WEBHOOK_PORT,
-        ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV),
+        #ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV),
         debug=True)
