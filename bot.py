@@ -221,6 +221,11 @@ def process_choose(message):
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        new_cat = keyboard.add(*[types.KeyboardButton('Создать категорию')])
+        for n in chat_category:
+            keyboard.add(*[types.KeyboardButton('Категория: ' + n)])
+        bot.send_message(message.chat.id, 'Выберите нужную категорию, если её нет, то создайте', reply_markup=keyboard)
         bot.register_next_step_handler(message, new_category)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
@@ -263,13 +268,8 @@ def new_market(message):
 def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    new_cat = keyboard.add(*[types.KeyboardButton('Создать категорию')])
-    for n in chat_category:
-        keyboard.add(*[types.KeyboardButton('Категория: ' + n)])
-    bot.send_message(message.chat.id, 'Выберите нужную категорию, если её нет, то создайте', reply_markup=keyboard)
     one_item.category = message.text
-    if new_cat:
+    if one_item.category == 'Создать категорию':
     	bot.send_message(chat_id, "Сейчас создадим новую")
     # if one_item.category:
     #     bot.send_message(chat_id, "Такая категория уже существует")
