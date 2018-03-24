@@ -68,16 +68,16 @@ class Ecommerce(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
-    category = db.Column(db.String(255))
+    category_items = db.Column(db.String(255))
     price = db.Column(db.Integer)
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
     category_id = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
-def __init__(self, name='', category ='',price=0, picture=None, market_id=0, filled=False):
+def __init__(self, name='', category_items ='', price=0, picture=None, market_id=0, filled=False):
     self.name = name
-    self.category = category
+    self.category_items = category_items
     self.price = price
     self.picture = picture
     self.market_id = market_id
