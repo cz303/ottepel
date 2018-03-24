@@ -273,7 +273,7 @@ def new_location(message):
     bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
 
 def items_slider(chat_id, list_items, item_id):
-    markup = types.InlineKeyboardMarkup()
+    markup = types.InlineKeyboardMarkup(one_time_keyboard=True,selective=True)
     row=[]
     prev_id = item_id - 1
     next_id = item_id + 1
