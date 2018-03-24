@@ -305,7 +305,7 @@ def process_choose(message):
                 string += 'Оплаченный заказ #'+order.chat_id+' от @'+str(order.chat_id)+' '+str(order.datetime)+', товар: '+item.name+' за '+str(item.price)+'\n'
             else:
                 string += 'НЕоплаченный заказ #'+order.chat_id+' от @'+str(order.chat_id)+' '+str(order.datetime)+', товар: '+item.name+' за '+str(item.price)+'\n'
-        bot.send_message(chat_id, string, reply_markup=markup)
+        bot.send_message(chat_id, string, reply_markup=menu(message))
     elif message.text == 'Настройки':
         bot.send_message(chat_id, "Выберите нужный пункт настроек", reply_markup=menu_settings(message))
     else:
