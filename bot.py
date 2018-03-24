@@ -254,8 +254,13 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Посмотреть все магазины':
         alll = Ecommerce.query.all()
-        string = ''
+        result = []
         for item in alll:
+            liss = Item.query.filter_by(market_id=item.id).all()
+            if len(liss) > 0:
+                result.append(item)
+        string = ''
+        for item in result:
             string +='Магазин #'+ str(item.domain) + '\n'
         bot.send_message(chat_id, string)
         bot.register_next_step_handler(message, lol)
