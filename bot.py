@@ -75,18 +75,14 @@ class Item(db.Model):
     category_id = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
-<<<<<<< HEAD
-    def __init__(self, name='', category ='',price=0, picture=None, market_id=0, filled=False):
-=======
-    def __init__(self, name='', price=0, picture=None, market_id=0, category_id=0, filled=False):
->>>>>>> 318cb8a56af1eedc18afc13d49f0d56ad90c8aac
-        self.name = name
-        self.category = category
-        self.price = price
-        self.picture = picture
-        self.market_id = market_id
-        self.filled = filled
-        self.category_id = category_id
+def __init__(self, name='', category ='',price=0, picture=None, market_id=0, filled=False):
+    self.name = name
+    self.category = category
+    self.price = price
+    self.picture = picture
+    self.market_id = market_id
+    self.filled = filled
+    self.category_id = category_id
 
     def __repr__(self):
         return '<Item #%r>' % self.id
