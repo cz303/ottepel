@@ -313,15 +313,12 @@ def process_settings(message):
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu_settings(message))
 
-'''api_bot = db.Column(db.String(255))
-    pkey1 = db.Column(db.String(255))
-    pkey2 = db.Column(db.String(255))
-    merchant_id = db.Column(db.String(255))'''
 def change_key(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.api_bot = message.text
     db.session.commit()
+    
     bot.send_message(chat_id, "Сохранено! Выберите нужный пункт меню", reply_markup=menu_settings(message))
 
 def change_pkey1(message):
