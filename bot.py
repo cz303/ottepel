@@ -228,9 +228,9 @@ def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.category_id = message.text
+    print(one_item.category_id)
     # db.session.add(new_item)
     db.session.commit()
-    print(one_item.category_id)
     bot.send_message(chat_id, "Введитие название товара")
     bot.register_next_step_handler(message, new_items)
 
