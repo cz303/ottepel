@@ -316,7 +316,7 @@ def lol(message):
     if item:
         next_id = 0
         list_items = Item.query.filter_by(market_id=item.chat_id).all()
-        markup = items_slider2(item.id, list_items, next_id)
+        markup = items_slider2(item.chat_id, list_items, next_id)
         r = http.request('GET', str(list_items[next_id].picture))
         bot.send_photo(chat_id, r.data, reply_markup=markup)
     else:
