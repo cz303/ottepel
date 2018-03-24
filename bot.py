@@ -589,6 +589,7 @@ def previous_item(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == 'menu')
 def to_menu(call):
+	bot.delete_message(call.from_user.id, call.message.message_id)
     bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
 
 
