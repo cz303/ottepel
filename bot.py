@@ -95,6 +95,21 @@ class Category(db.Model):
     def __repr__(self):
         return '<Category %r>' % self.name
 
+class Orders(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    chat_id = db.Column(db.String(255))
+    market_id = db.Column(db.Integer)
+    datetime = db.DateTime(default=datetime.datetime.utcnow)
+    item_id = db.Colum(db.Integer)
+    paid = db.Column(db.Boolean, default=False, nullable=False)
+
+    def __init__(self, name=''):
+        self.name = name
+
+    def __repr__(self):
+        return '<Order for %r>' % self.chat_id
+
+
 chat_dict ={}
 chat_category={'первая категория', 'вторая категория'}
 # create table
