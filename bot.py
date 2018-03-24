@@ -190,7 +190,7 @@ def buy():
     new_order = Orders(chat_id, one_item.market_id, one_item.id)
     db.session.add(new_order)
     db.session.commit()
-    return 'https://dynamic-door.ru/pay/'+new_order.id
+    return 'https://dynamic-door.ru/pay/'+str(new_order.id)
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
