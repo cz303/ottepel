@@ -99,7 +99,7 @@ class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     chat_id = db.Column(db.String(255))
     market_id = db.Column(db.Integer)
-    datetime = db.DateTime(default=datetime.datetime.now())
+    datetime = db.DateTime(default=datetime.datetime.utcnow())
     item_id = db.Colum(db.Integer)
     paid = db.Column(db.Boolean, default=False, nullable=False)
 
@@ -140,6 +140,21 @@ def category(catid):
     category = Category.query.filter_by(category_id=catid).first()
     products = Item.query.filter_by(category_id=category.id).all()
     return flask.render_template('category.html', category=category, products=products)
+
+@app.route('/buy', methods=['POST'])
+def index(username):
+    
+    one_item = Ecommerce.query.filter_by(domain=username).first()
+    if not one_item:
+        if username == '':
+            # main domain, show all
+            return '123'
+        else:
+            # redirect to main
+            return flask.redirect("https://85.143.209.253:8443/", code=302)
+    else:
+        # this is merchant's subdomain
+        return username
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
