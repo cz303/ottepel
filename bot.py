@@ -221,8 +221,10 @@ def process_choose(message):
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
+    	keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         for n in chat_category:
-            bot.send_message(message.chat.id, n)
+            keyboard.add(*[types.KeyboardButton('Категория: ' + n)])
+            # bot.send_message(message.chat.id, n)
         bot.send_message(chat_id, "Введитие категорию товара")
         bot.register_next_step_handler(message, new_category)
     elif message.text == 'Получить информацию о магазине':
