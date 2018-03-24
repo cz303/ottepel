@@ -327,10 +327,13 @@ def to_menu(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'edit')
 def edit(call):
     bot.send_message(call.message.chat.id, "Редактируем #", reply_markup=menu(call.message))
-	key_default = types.ReplyKeyboardMarkup(resize_keyboard=True)
-	key_default.row(types.KeyboardButton('Button 1'))
-	key_default.row(types.KeyboardButton('Button 2'))
-	key_default.row(types.KeyboardButton('Button 3'))
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
+
+        markup.row(types.KeyboardButton('Редактировать имя товара'))
+        markup.row(types.KeyboardButton('Редактировать цену'))
+        # markup.row(types.KeyboardButton('Список товаров'))
+        #markup.row(types.KeyboardButton('Вывести количество товаров'))
+    return markup
 
     
 
