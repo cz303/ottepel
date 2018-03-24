@@ -306,7 +306,7 @@ def menu_settings(message):
 
 def lol (message):
     chat_id = message.chat.id
-    kg = message.text[9:]
+    kg = message.text[1:]
     print(kg)
     item = Ecommerce.query.filter_by(market=kg).first()
     if item:
