@@ -96,6 +96,7 @@ class Category(db.Model):
         return '<Category %r>' % self.name
 
 chat_dict ={}
+chat_category={'первая категория', 'вторая категория'}
 # create table
 db.create_all()
 
@@ -226,6 +227,7 @@ def new_market(message):
 
 def new_category(message):
     chat_id = message.chat.id
+    for i 
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.category_id = message.text
     # db.session.add(new_item)
@@ -317,7 +319,7 @@ def items_slider(chat_id, list_items, item_id):
     if next_id > len(list_items) - 1:
         next_id = 0
 
-    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + str(list_items[item_id].category_id), callback_data="ignore"))
+    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + str(list_items.chat_category(list_items[item_id].category_id)), callback_data="ignore"))
 
     markup.row(*row)
     row=[]
