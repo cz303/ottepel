@@ -119,9 +119,9 @@ def mainw():
     products = Item.query.all()
     return flask.render_template('index.html', categories=categories, products=products)
 
-@app.route('/category/<catname>', methods=['GET'])
-def category(catname):
-    category = Category.query.first()
+@app.route('/category/<catid>', methods=['GET'])
+def category(catid):
+    category = Category.query.filter_by(category_id=catid).first()
     products = Item.query.filter_by(category_id=category.id).all()
     return flask.render_template('category.html', category=category, products=products)
 
