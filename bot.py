@@ -329,8 +329,9 @@ def to_menu(call):
 @bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
 def to_edit(call):
     # get id of item
+    chat_id = call.message.chat.id
     item_num = int(call.data[4:])
-    bot.send_message(call.message.chat.id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(call.message, item_num))
+    bot.send_message(chat.id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(call.message, item_num))
     
 def edit_menu(message, item_num):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
