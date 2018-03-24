@@ -349,7 +349,7 @@ def process_edit(message):
     if message.text == 'Редактировать имя':
         bot.send_message(chat_id, "Введите новое название товара")
    	    one_item.name = message.text
-        db.session.add(new_item)
+        db.session.add(one_item)
         db.session.commit()
         bot.register_next_step_handler(message, menu)
     elif message.text == 'Редактировать цену':
