@@ -5,6 +5,7 @@ from telebot import types
 import json
 import calendar
 import flask
+import hashlib
 import logging
 from time import sleep
 from slugify import slugify
@@ -54,6 +55,10 @@ class Ecommerce(db.Model):
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
     domain = db.Column(db.String(255))
+    api_bot = db.Column(db.String(255))
+    pkey1 = db.Column(db.String(255))
+    pkey2 = db.Column(db.String(255))
+    merchant_id = db.Column(db.String(255))
 
     def __init__(self, chat_id, has_shop=False, market=None, location=None, domain=None):
         self.chat_id = chat_id
@@ -103,8 +108,10 @@ class Orders(db.Model):
     item_id = db.Column(db.Integer)
     paid = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, name=''):
-        self.name = name
+    def __init__(self, chat_id='', market_id=0, item_id=0):
+        self.chat_id = chat_id
+        self.market_id = market_id
+        self.item_id = item_id
 
     def __repr__(self):
         return '<Order for %r>' % self.chat_id
@@ -115,6 +122,31 @@ chat_category={'Автомобили', 'Хобби', 'Чушь', 'и ещё', '�
 # create table
 db.create_all()
 
+
+def get_pay_link(my_key, merchant_id, order_id, amount):
+    data = {
+        "request":{
+            "order_id": order_id,
+            "order_desc": "Оплата через eMarketBot",
+            "currency":"RUB",
+            "amount":amount,
+            "merchant_id":merchant_id
+        }
+    }
+    assert 'request' in data.keys()
+    keys = sorted(data['request'].keys())
+    values = [my_key]
+    values += [data['request'][key] for key in keys]
+    raw = '|'.join(values)
+    data['request']['signature'] = hashlib.sha1(raw.encode('utf-8')).hexdigest()
+
+    encoded_body = json.dumps(data)
+    http = urllib3.PoolManager()
+    r = http.request('POST', 'https://api.fondy.eu/api/checkout/redirect/',
+        headers={'Content-Type': 'application/json'},
+        body=encoded_body)
+
+    return r.read()
 
 ## СМОТРИ ТУТ!
 # --Добавляем нового чувака в базу, заполняем поля:
@@ -142,19 +174,16 @@ def category(catid):
     return flask.render_template('category.html', category=category, products=products)
 
 @app.route('/buy', methods=['POST'])
-def buy(username):
-
-    one_item = Ecommerce.query.filter_by(domain=username).first()
-    if not one_item:
-        if username == '':
-            # main domain, show all
-            return '123'
-        else:
-            # redirect to main
-            return flask.redirect("https://85.143.209.253:8443/", code=302)
-    else:
-        # this is merchant's subdomain
-        return username
+def buy():
+    item_id = request.form.get('item')
+    chat_id = request.form.get('chat_id')
+    one_item = Item.query.filter_by(id=item_id).first()
+    one_market = Ecommerce.query.filter_by(id=one_item.market_id).first()
+    new_order = Orders(chat_id, one_item.market_id, one_item.id)
+    db.session.add(new_order)
+    db.session.commit()
+    pay_link = get_pay_link(one_market.pkey1, one_market.merchant_id, new_order.id, one_item.price)
+    return pay_link
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
@@ -235,7 +264,7 @@ def process_choose(message):
     #    all_items = Item.query.filter_by(market_id=chat_id).all()
     #    bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
     #    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)        
-    #    for i in range(len(all_items)):
+    #    for i in range(len(all_items)):    
     #        keyboard.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))])
     #        #+ bot.send_photo(chat_id, all_items[i].picture))])
     #    bot.send_message(message.chat.id, 'ваш товар', reply_markup=keyboard)
@@ -251,6 +280,11 @@ def process_choose(message):
         markup = items_slider(chat_id, list_orders, next_id)
         r = http.request('GET', str(list_orders[next_id].picture))
         bot.send_photo(chat_id, r.data, reply_markup=markup)
+    elif message.text == 'Заполнить опциональные поля':
+        bot.send_message(chat_id, "Введите api_bot - ключ из BotFather")
+        bot.send_message(chat_id, "Введите pkey1 со страницы https://portal.fondy.eu/mportal/#/settings/")
+        bot.send_message(chat_id, "Введите pkey2 со страницы https://portal.fondy.eu/mportal/#/settings/")
+        bot.send_message(chat_id, "Введите Merchant id со страницы https://portal.fondy.eu/mportal/#/settings/")
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
