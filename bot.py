@@ -311,7 +311,7 @@ def lol (message):
     print(kg)
     item = Ecommerce.query.filter_by(domain=kg).first()
     if item:
-        bot.send_message(chat_id, item.name + src(item.price) + item.picture)
+        api_bot(bot.send_message(chat_id, item.name + src(item.price) + item.picture))
     else:
         bot.send_message(chat_id, "Такого магазина нет")
         bot.register_next_step_handler(message, menu)
