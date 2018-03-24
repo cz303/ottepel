@@ -254,8 +254,8 @@ def process_choose(message):
     elif message.text == 'Посмотреть все магазины':
         alll = Ecommerce.query.all()
         string = ''
-            for item in alll:
-                string +='Магазин #'+item.domain + '\n'
+        for item in alll:
+            string +='Магазин #'+item.domain + '\n'
         bot.send_message(chat_id, string)
         bot.register_next_step_handler(message,)
     elif message.text == 'Добавить товар':
