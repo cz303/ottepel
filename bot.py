@@ -111,7 +111,7 @@ class Orders(db.Model):
 
 
 chat_dict ={}
-chat_category={'Автомобили', 'Хобби', 'Чушь'}
+chat_category={'Автомобили', 'Хобби', 'Чушь', 'и ещё', 'куча', 'всяких', 'категорий'}
 # create table
 db.create_all()
 
