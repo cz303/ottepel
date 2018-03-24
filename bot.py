@@ -397,10 +397,10 @@ def change_picture(message):
         file_info = bot.get_file(message.photo[-1].file_id)
         downloaded_file = 'https://api.telegram.org/file/bot' + API_TOKEN + '/' + file_info.file_path
         print(downloaded_file)
-        new_item.picture = downloaded_file
-        new_item.filled = True
+        one_item.picture = downloaded_file
+        one_item.filled = True
         db.session.commit()
-        bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=edit_menu(message, item_num))
+        bot.send_message(chat_id, "Картинка изменена. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
     else:
         bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
         bot.register_next_step_handler(message, new_picture)
