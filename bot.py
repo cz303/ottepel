@@ -313,15 +313,12 @@ def process_settings(message):
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu_settings(message))
 
-'''api_bot = db.Column(db.String(255))
-    pkey1 = db.Column(db.String(255))
-    pkey2 = db.Column(db.String(255))
-    merchant_id = db.Column(db.String(255))'''
 def change_key(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.api_bot = message.text
     db.session.commit()
+    
     bot.send_message(chat_id, "Сохранено! Выберите нужный пункт меню", reply_markup=menu_settings(message))
 
 def change_pkey1(message):
@@ -358,17 +355,17 @@ def new_market(message):
 def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    # msg = message.text
-    # if msg == 'Создать категорию':
-    #     bot.send_message(chat_id, "Введите новую категорию")
-    #     # for n in chat_category:
-    #     #     if message.text == n:
-    #     #         bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
-    #     #         bot.register_next_step_handler(message, new_category)
-    #     #     else:
-    #     #         bot.send_message(chat_id, "Данная категория создана!")
-    # else:
-    #     bot.register_next_step_handler(message, new_items)
+    msg = message.text
+    if msg == 'Создать категорию':
+        bot.send_message(chat_id, "Введите новую категорию")
+        # for n in chat_category:
+        #     if message.text == n:
+        #         bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
+        #         bot.register_next_step_handler(message, new_category)
+        #     else:
+        #         bot.send_message(chat_id, "Данная категория создана!")
+    else:
+        bot.register_next_step_handler(message, new_items)
 
 def new_items(message):
     chat_id = message.chat.id
