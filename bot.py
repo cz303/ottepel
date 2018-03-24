@@ -362,7 +362,7 @@ def new_category(message):
         bot.register_next_step_handler(message, new_category)
     else:
         # либо прислал новую категорию, либо выбрал существующую
-        item = Category.query.filter_by(name=msg).first()
+        item = Category.query.filter_by(name=str(msg)).first()
         if item:
             item_dict[chat_id] = item.id
         else:
