@@ -347,20 +347,27 @@ def process_edit(message):
     item_num = chat_dict[chat_id] # - тут у нас лежит id товара
     if message.text == 'Редактировать имя':
         bot.send_message(chat_id, "Введите новое название товара")
-        #new_item = Item(message.text, 0, None, chat_id)
-        db.session.add(new_item)
-        db.session.commit()
-        one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-        bot.register_next_step_handler(message, menu)
-        #bot.register_next_step_handler(message, new_price)
-        #bot.register_next_step_handler(message, new_items)
+        bot.register_next_step_handler(message, change_item)
     elif message.text == 'Редактировать цену':
         bot.send_message(chat_id, "Введитие новую цену")
-        bot.register_next_step_handler(message, new_price)
+        bot.register_next_step_handler(message, change_price)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
 
+def change_item(message):
+    chat_id = message.chat.id
+    new_item = Item(message.text, 0, None, chat_id)
+    db.session.add(new_item)
+    db.session.commit()
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+
+def change_price(message):
+    chat_id = message.cahat.id
+    new_price = Item(message.text, 0, None, chat_id)
+    db.sessin.add(new_price)
+    db.session.commit()
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
