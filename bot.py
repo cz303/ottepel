@@ -55,7 +55,6 @@ class Ecommerce(db.Model):
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
     domain = db.Column(db.String(255))
-    api_bot = db.Column(db.String(255))
     pkey1 = db.Column(db.String(255))
     pkey2 = db.Column(db.String(255))
     merchant_id = db.Column(db.String(255))
@@ -301,7 +300,6 @@ def process_choose(message):
 
 def menu_settings(message):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, selective=True)
-    markup.row(types.KeyboardButton('api_bot - ключ из BotFather'))
     markup.row(types.KeyboardButton('Платежная система - pkey1'))
     markup.row(types.KeyboardButton('Платежная система - pkey2'))
     markup.row(types.KeyboardButton('Платежная система - Merchant id'))
@@ -386,10 +384,7 @@ def to_menu(call):
 
 def process_settings(message):
     chat_id = message.chat.id
-    if message.text == 'api_bot - ключ из BotFather':
-        bot.send_message(chat_id, "Введите значение")
-        bot.register_next_step_handler(message, change_key)
-    elif message.text == 'Платежная система - pkey1':
+    if message.text == 'Платежная система - pkey1':
         bot.send_message(chat_id, "Введите значение")
         bot.register_next_step_handler(message, change_pkey1)
     elif message.text == 'Платежная система - pkey2':
@@ -403,14 +398,6 @@ def process_settings(message):
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu_settings(message))
-
-def change_key(message):
-    chat_id = message.chat.id
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    one_item.api_bot = message.text
-    db.session.commit()
-    
-    bot.send_message(chat_id, "Сохранено! Выберите нужный пункт меню", reply_markup=menu_settings(message))
 
 def change_pkey1(message):
     chat_id = message.chat.id
