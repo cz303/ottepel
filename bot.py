@@ -75,7 +75,7 @@ class Item(db.Model):
     category_id = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, name='', category='', price=0, picture=None, market_id=0, filled=False, category_id=0):
+    def __init__(self, name='', category='Запиши', price=0, picture=None, market_id=0, filled=False, category_id=0):
         self.name = name
         self.category = category
         self.price = price
