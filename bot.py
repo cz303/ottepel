@@ -295,7 +295,7 @@ def items_slider(chat_id, list_items, item_id):
         row.append(types.InlineKeyboardButton(">",callback_data="next-item"+str(next_id)))
     else:
         row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
-        row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id))))
+        row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
     markup.row(*row)
     return markup
 
