@@ -35,7 +35,7 @@ telebot.logger.setLevel(logging.INFO)
 
 bot = telebot.TeleBot(API_TOKEN, threaded=False)
 
-app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_url_path='/static')
 
 
 ###### DB
@@ -87,6 +87,7 @@ chat_dict ={}
 # create table
 db.create_all()
 
+
 ## СМОТРИ ТУТ!
 # --Добавляем нового чувака в базу, заполняем поля:
 # ecommerce_item = Ecommerce('admin', 'admin@example.com')
@@ -102,7 +103,11 @@ db.create_all()
 # one_item = Ecommerce.query.filter_by(chat_id='123321').first()
 @app.route('/', methods=['GET'])
 def mainw():
-    return '123'
+    return flask.render_template('index.html', categories=categories, products=products)
+
+@app.route('/category/<catname>', methods=['GET'])
+def category(catname):
+    return flask.render_template('category.html', category=category, products=products)
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):

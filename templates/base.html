@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>eMarketBot</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="/static/css/style.css" type="text/css" />
+  <script type="text/javascript" src="/static/js/web3.min.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/sweetalert2@7.1.0/dist/sweetalert2.all.js"></script>
+  <script type="text/javascript" src="/static/js/script.js"></script>
+  
+</head>
+<body>
+  <div class="header">
+    <div class="wrapper">
+      <a href="/" class="logo">eMarketBot</a>
+      <div class="input">
+        <input type="text" id="search" placeholder="Поиск по товарам">
+        <i class="fa fa-search search" aria-hidden="true"></i>
+      </div>
+      <div class="rightblock">
+        <!--<a href="/merchant" class="merchant"><i class="fa fa-briefcase" aria-hidden="true"></i></a>
+        <a href="/customer" class="customer"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>-->
+      </div>
+    </div>
+  </div>
+  {% block content %}
+  {% endblock %}
+  
+  {% block bought_history %}
+  {% endblock %}
+  
+  <div class="footer">
+    <div class="wrapper">
+      <a href="/" class="logo">eMarketBot</a>
+      <div class="text">
+        (c) 2018 - Сервис для упрощения жизни оффлайн-бизнесу в онлайне<br>
+        
+      </div>
+    </div>
+  </div>
+</body>
+</html>
