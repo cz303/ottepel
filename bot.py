@@ -111,6 +111,7 @@ class Orders(db.Model):
 
 
 chat_dict ={}
+chat_category={'первая категория', 'вторая категория'}
 # create table
 db.create_all()
 
@@ -243,7 +244,6 @@ def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.category_id = message.text
-    # db.session.add(new_item)
     db.session.commit()
     bot.send_message(chat_id, "Вы ввели название " + one_item.category_id)
     bot.send_message(chat_id, "Введитие название товара")
@@ -332,7 +332,7 @@ def items_slider(chat_id, list_items, item_id):
     if next_id > len(list_items) - 1:
         next_id = 0
 
-    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + str(list_items[item_id].category_id), callback_data="ignore"))
+    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + str(list_items.chat_category(list_items[item_id].category_id)), callback_data="ignore"))
 
     markup.row(*row)
     row=[]
