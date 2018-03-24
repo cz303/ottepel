@@ -275,8 +275,7 @@ def new_category(message):
             if message.text == n:
                 bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
             else:
-            	bot.send_message(chat_id, "Данная категория создана"!)
-                chat_category.append(message.text)
+            	bot.send_message(chat_id, "Данная категория создана!")
     # if one_item.category:
     #     bot.send_message(chat_id, "Такая категория уже существует")
     #     bot.register_next_step_handler(message, new_category)
