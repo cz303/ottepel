@@ -173,7 +173,7 @@ def process_choose(message):
     elif message.text == 'Вывести количество товаров': 
         all_items = Item.query.filter_by(market_id=chat_id).all()
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
-        keybord = types.InlineKeyboardMarkup(resize_keyboard=True)        
+        keybord = types.InlineKeyboardMarkup()        
         for i in range(len(all_items)):
             keybord.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))])
             msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
