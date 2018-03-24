@@ -83,7 +83,7 @@ class Item(db.Model):
     def __repr__(self):
         return '<Item #%r>' % self.id
 
-
+chat_dict ={}
 # create table
 db.create_all()
 
@@ -187,8 +187,6 @@ def process_choose(message):
         markup = items_slider(chat_id, list_items, next_id)
         r = http.request('GET', str(list_items[next_id].picture))
         bot.send_photo(chat_id, r.data, reply_markup=markup)
-    elif message.text.startswith('Редактировать товар #'):
-        bot.send_message(chat_id, "Вы хотели отредактировать товар #" + message.text[21:], reply_markup=menu(message))
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
@@ -297,7 +295,7 @@ def items_slider(chat_id, list_items, item_id):
         row.append(types.InlineKeyboardButton(">",callback_data="next-item"+str(next_id)))
     else:
         row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
-        row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"))
+        row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id))))
     markup.row(*row)
     return markup
 
@@ -328,15 +326,35 @@ def to_menu(call):
     bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
 
 
-@bot.callback_query_handler(func=lambda call: call.data == 'edit')
+@bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
 def to_edit(call):
-    bot.send_message(call.message.chat.id, "Редактируем #", reply_markup=menu(call.message))
-    markup = types.InlineKeyboardMarkup()
-    row=[]
-    row.append(types.InlineKeyboardButton("Редактировать имя",callback_data="edit_name"))
-    row.append(types.InlineKeyboardButton("Редактировать цену",callback_data="edit_price"))
-    # row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
+    # get id of item
+    item_num = int(call.data[4:])
+    bot.send_message(message.chat.id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(call.message, item_num))
+    
+def edit_menu(message, item_num):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
+    chat_id = message.chat.id
+    chat_dict[chat_id] = item_num
+    markup.row(types.KeyboardButton('Редактировать имя'))
+    markup.row(types.KeyboardButton('Редактировать цену'))
+    bot.register_next_step_handler(message, process_edit)
     return markup
+
+def process_edit(message):
+    chat_id = message.chat.id
+    item_num = chat_dict[chat_id] # - тут у нас лежит id товара
+    if message.text == 'Редактировать имя':
+        # chat_dict[chat_id] - тут у нас лежит id товара
+        #bot.send_message(chat_id, "Введите название магазина")
+        #bot.register_next_step_handler(message, new_market)
+    elif message.text == 'Редактировать цену':
+        #bot.send_message(chat_id, "Введитие название товара")
+        #bot.register_next_step_handler(message, new_items)
+    else:
+        bot.reply_to(message, "Команда не распознана")
+        bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
+
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
