@@ -358,8 +358,8 @@ def new_market(message):
 def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    one_item.category = message.text
-    if one_item.category == 'Создать категорию':
+    msg = message.text
+    if msg == 'Создать категорию':
         bot.send_message(chat_id, "Введите новую категорию")
         # for n in chat_category:
         #     if message.text == n:
