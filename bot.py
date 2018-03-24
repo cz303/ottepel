@@ -182,7 +182,7 @@ def process_choose(message):
         next_id = 0
         list_items = Item.query.filter_by(market_id=chat_id).all()
         markup = items_slider(chat_id, list_items, next_id)
-        bot.send_message(chat_id, '<a href="'+str(list_items[next_id].picture)+'">Картинка</a>', reply_markup=markup, parse_mode="HTML")
+        bot.send_message(chat_id, '&lt;a href=&quot;'+str(list_items[next_id].picture)+'&quot;&gt;Картинка&lt;/a&gt;', reply_markup=markup, parse_mode="HTML")
     elif message.text.startswith('Редактировать товар #'):
         bot.send_message(chat_id, "Вы хотели отредактировать товар #" + message.text[21:], reply_markup=menu(message))
     else:
@@ -306,7 +306,7 @@ def next_item(call):
     list_items = Item.query.filter_by(market_id=chat_id).all()
     item_num = int(call.data[9:])
     markup = items_slider(chat_id, list_items, item_num)
-    bot.edit_message_text('<a href="'+str(list_items[item_num].picture)+'">Картинка</a>', call.from_user.id, call.message.message_id, reply_markup=markup, parse_mode="HTML")
+    bot.edit_message_text('&lt;a href=&quot;'+str(list_items[item_num].picture)+'&quot;&gt;Картинка&lt;/a&gt;', call.from_user.id, call.message.message_id, reply_markup=markup, parse_mode="HTML")
     bot.answer_callback_query(call.id, text="")
 
 @bot.callback_query_handler(func=lambda call: call.data[0:9] == 'prev-item')
@@ -315,7 +315,7 @@ def previous_item(call):
     list_items = Item.query.filter_by(market_id=chat_id).all()
     item_num = int(call.data[9:])
     markup = items_slider(chat_id, list_items, item_num)
-    bot.edit_message_text('<a href="'+str(list_items[item_num].picture)+'">Картинка</a>', call.from_user.id, call.message.message_id, reply_markup=markup, parse_mode="HTML")
+    bot.edit_message_text('&lt;a href=&quot;'+str(list_items[item_num].picture)+'&quot;&gt;Картинка&lt;/a&gt;', call.from_user.id, call.message.message_id, reply_markup=markup, parse_mode="HTML")
     bot.answer_callback_query(call.id, text="")
 
 @bot.callback_query_handler(func=lambda call: call.data == 'menu')
