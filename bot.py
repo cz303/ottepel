@@ -142,7 +142,7 @@ def menu(message):
         markup.row(types.KeyboardButton('Получить информацию о магазине'))
         markup.row(types.KeyboardButton('Добавить товар'))
         markup.row(types.KeyboardButton('Список товаров'))
-        markup.row(types.KeyboardButton('Вывести количество товаров'))
+        #markup.row(types.KeyboardButton('Вывести количество товаров'))
     bot.register_next_step_handler(message, process_choose)
     return markup
 
@@ -314,7 +314,7 @@ def to_menu(call):
     bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
 
 @bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
-def to_menu(call):
+def edit(call):
     bot.send_message(call.message.chat.id, "Редактируем #"+call.data[4:], reply_markup=menu(call.message))
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
