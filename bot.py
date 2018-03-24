@@ -266,6 +266,7 @@ def new_market(message):
 def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     for i in range(len(chat_category)):
         keyboard.add(*[types.KeyboardButton('Доступные категории: ' + chat_category[i] )])
     one_item.category_id = message.text
