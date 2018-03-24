@@ -307,14 +307,68 @@ def menu_settings(message):
 
 def lol (message):
     chat_id = message.chat.id
-    kg = message.text[1:]
-    print(kg)
+    kg = message.text[9:]
     item = Ecommerce.query.filter_by(domain=kg).first()
     if item:
-        api_bot(bot.send_message(chat_id, item.name + src(item.price) + item.picture))
+        markup = types.InlineKeyboardMarkup()
+        row=[]
+        prev_id = item_id - 1
+        next_id = item_id + 1
+
+        if prev_id < 0:
+            prev_id = len(list_items) - 1
+        if next_id > len(list_items) - 1:
+            next_id = 0
+
+        row.append(types.InlineKeyboardButton(kg, callback_data="ignore"))
+
+        markup.row(*row)
+        row=[]
+        if len(list_items) > 1:
+            row.append(types.InlineKeyboardButton("<",callback_data="market_prev-item"+str(prev_id)))
+            row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"))
+            row.append(types.InlineKeyboardButton(">",callback_data="market_next-item"+str(next_id)))
+        else:
+            row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
+            # row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
+        markup.row(*row)	
+        return markup
     else:
         bot.send_message(chat_id, "Такого магазина нет")
         bot.register_next_step_handler(message, menu)
+
+@bot.callback_query_handler(func=lambda call: call.data[0:16] == 'market_next-item')
+def next_item(call):
+    chat_id = call.message.chat.id
+    item_num = int(call.data[16:])
+    markup = lol(chat_id, item, item_num) 
+    bot.delete_message(call.item.id, call.message.message_id)
+    r = http.request('GET', str(item[item_num].picture))
+    bot.send_photo(call.from_user.id, r.data, reply_markup=markup)
+    bot.answer_callback_query(call.id, text="")
+
+@bot.callback_query_handler(func=lambda call: call.data[0:16] == 'market_prev-item')
+def previous_item(call):
+    chat_id = call.message.chat.id
+    list_items = Item.query.filter_by(market_id=chat_id).all()
+    item_num = int(call.data[16:])
+    markup = items_slider(chat_id, item, item_num)
+    bot.delete_message(call.from_user.id, call.message.message_id)
+    r = http.request('GET', str(item[item_num].picture))
+    bot.send_photo(call.from_user.id, r.data, reply_markup=markup)
+    bot.answer_callback_query(call.id, text="")
+
+@bot.callback_query_handler(func=lambda call: call.data == 'market_menu')
+def to_menu(call):
+    bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
+
+
+# @bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
+# def to_edit(call):
+#     # get id of item
+#     chat_id = call.message.chat.id
+#     item_num = int(call.data[4:])
+#     bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(call.message, item_num))
 
 def process_settings(message):
     chat_id = message.chat.id
