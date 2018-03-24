@@ -111,7 +111,7 @@ class Orders(db.Model):
 
 
 chat_dict ={}
-chat_category={'первая категория', 'вторая категория'}
+chat_category={'name':'первая категория'}
 # create table
 db.create_all()
 
@@ -222,9 +222,9 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
         bot.send_message(chat_id, "Введитие категорию товара")
+        for i in range(len(chat_category)):
+            bot.send_message(chat_id, chat_category[i])
         bot.register_next_step_handler(message, new_category)
-        # bot.send_message(chat_id, "Введитие название товара")
-        # bot.register_next_step_handler(message, new_items)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
@@ -265,7 +265,6 @@ def new_market(message):
 
 def new_category(message):
     chat_id = message.chat.id
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.category = message.text
     one_item.category = Category.filter_by(Category=message.text)
     if one_item.category:
@@ -378,7 +377,7 @@ def items_slider(chat_id, list_items, item_id):
 @bot.callback_query_handler(func=lambda call: call.data[0:9] == 'next-item')
 def next_item(call):
     chat_id = call.message.chat.id
-    list_items = Item.query.filter_by(market_id=chat_id).all()
+    list_items = Item.query.filter_by(market_id=chat_id).all()	
     item_num = int(call.data[9:])
     markup = items_slider(chat_id, list_items, item_num) 
     bot.delete_message(call.from_user.id, call.message.message_id)
