@@ -354,10 +354,10 @@ def new_market(message):
     bot.send_message(chat_id, "Введите желаемый поддомен:")
     bot.register_next_step_handler(message, new_slug)
 
-def new_category(message):
+ef new_category(message):
     chat_id = message.chat.id
     msg = str(message.text)
-   if msg == 'Создать категорию':
+    if msg == 'Создать категорию':
         msg = bot.send_message(chat_id, "Введите новую категорию")
         bot.register_next_step_handler(message, new_category)
     else:
@@ -367,7 +367,7 @@ def new_category(message):
             item_dict[chat_id] = item.id
         else:
             cat = Category(msg)
-            db.session.add(item)
+            db.session.add(new_item)
             db.session.commit()
             item_dict[chat_id] = cat.id
         bot.send_message(chat_id, "Введите название товара")
