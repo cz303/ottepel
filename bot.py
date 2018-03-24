@@ -308,7 +308,7 @@ def lol (message):
     chat_id = message.chat.id
     kg = message.text[1:]
     print(kg)
-    item = Ecommerce.query.filter_by(market_id=kg).first()
+    item = Ecommerce.query.filter_by(market=kg).first()
     if item:
         markup = types.InlineKeyboardMarkup()
         row=[]
