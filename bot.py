@@ -266,6 +266,8 @@ def new_market(message):
 def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    for i in range(len(chat_category)):
+        keyboard.add(*[types.KeyboardButton('Доступные категории: ' + chat_category[i] )])
     one_item.category_id = message.text
     db.session.commit()
     bot.send_message(chat_id, "Вы ввели название " + one_item.category_id)
@@ -373,7 +375,7 @@ def items_slider(chat_id, list_items, item_id):
 @bot.callback_query_handler(func=lambda call: call.data[0:9] == 'next-item')
 def next_item(call):
     chat_id = call.message.chat.id
-    list_items = Item.query.filter_by(market_id=chat_id).all()
+    list_items = Item.query.filter_by(market_id=chat_id).all()	
     item_num = int(call.data[9:])
     markup = items_slider(chat_id, list_items, item_num) 
     bot.delete_message(call.from_user.id, call.message.message_id)
