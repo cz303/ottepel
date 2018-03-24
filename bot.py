@@ -332,6 +332,7 @@ def edit(call):
     row.append(types.InlineKeyboardButton("Редактировать название товара",callback_data="edit_name"))
     row.append(types.InlineKeyboardButton("Редактировать цену",callback_data="edit_price"))
     markup.row(*row)
+    return markup
     # row.append(types.InlineKeyboardButton("Поменять картинку",callback_data="edit"+str(list_items[item_id].id)))
     
 
