@@ -174,9 +174,10 @@ def process_choose(message):
     elif message.text == 'Вывести количество товаров': 
         all_items = Item.query.filter_by(market_id=chat_id).all()
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
-        keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
+        keybord = types.ReplyKeyboardMarkup(resize_keyboard=True)        
         for i in range(len(all_items)):
-            keyboard.row(types.InlineKeyboardButton)
+            keybord.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price)+ bot.send_photo(chat_id, all_items[i].picture))])
+            msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
     elif message.text == 'Список товаров':
         next_id = 0
         list_items = Item.query.filter_by(market_id=chat_id).all()
@@ -187,7 +188,6 @@ def process_choose(message):
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
 
 ###### /HERE
-
 def new_market(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
