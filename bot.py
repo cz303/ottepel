@@ -181,7 +181,7 @@ def pay(oid):
     ecommerce = Ecommerce.query.filter_by(chat_id=item.market_id).first()
     return flask.render_template('pay.html', item=item, ecommerce=ecommerce, oid=oid)
 
-@app.route('/confirm/<oid>', methods=['GET'])
+@app.route('/confirm/<oid>', methods=['GET', 'POST'])
 def confirmm(oid):
     order = Orders.query.filter_by(id=oid).first()
     order.paid = True
