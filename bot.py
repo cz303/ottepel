@@ -295,7 +295,7 @@ def items_slider(chat_id, list_items, item_id):
         row.append(types.InlineKeyboardButton(">",callback_data="next-item"+str(next_id)))
     else:
         row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
-        row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
+        row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"))
     markup.row(*row)
     return markup
 
@@ -329,7 +329,7 @@ def to_menu(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'edit')
 def to_edit(call):
     bot.send_message(call.message.chat.id, "Редактируем #", reply_markup=menu(call.message))
-    markup = types.InlineKeyboardMarkup()
+    markup = types.InlineKeyboardMarkup(one_time_keyboard=True,selective=True)
     row=[]
     row.append(types.InlineKeyboardButton("Редактировать имя",callback_data="edit_name"))
     row.append(types.InlineKeyboardButton("Редактировать цену",callback_data="edit_price"))
