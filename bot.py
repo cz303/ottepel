@@ -309,7 +309,7 @@ def previous_item(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'to_menu')
 def to_menu(call):
 	chat_id = call.message.chat.id
-    bot.register_next_step_handler(message, menu)
+    bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
