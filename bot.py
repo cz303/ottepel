@@ -274,9 +274,6 @@ def new_location(message):
 def items_slider(chat_id, list_items, item_id):
     markup = types.InlineKeyboardMarkup()
     row=[]
-    row.append(types.InlineKeyboardButton("Товары",callback_data="ignore"))
-    markup.row(*row)
-    row=[]
     prev_id = item_id - 1
     next_id = item_id + 1
 
