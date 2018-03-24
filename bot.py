@@ -139,7 +139,8 @@ def menu(message):
     else:
         markup.row(types.KeyboardButton('Получить информацию о магазине'))
         markup.row(types.KeyboardButton('Добавить товар'))
-        markup.row(types.KeyboardButton('Список товаров'))
+        if Item.query.filter_by(market_id=chat_id).first():
+            markup.row(types.KeyboardButton('Список товаров'))
         #markup.row(types.KeyboardButton('Вывести количество товаров'))
     bot.register_next_step_handler(message, process_choose)
     return markup
