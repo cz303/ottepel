@@ -174,6 +174,13 @@ def category(catid):
     products = Item.query.filter_by(category_id=category.id).all()
     return flask.render_template('category.html', category=category, products=products)
 
+@app.route('/pay/<oid>', methods=['GET'])
+def category(catid):
+    order = Orders.query.filter_by(id=catid).first()
+    item = Item.query.filter_by(id=order.item_id).first()
+    ecommerce = Ecommerce.query.filter_by(item.market_id).first
+    return flask.render_template('pay.html', item=item, ecommerce=ecommerce)
+
 @app.route('/buy', methods=['POST'])
 def buy():
     item_id = request.form.get('item')
