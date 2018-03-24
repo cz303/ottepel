@@ -266,7 +266,7 @@ def items_slider(chat_id, list_items, item_id):
     row.append(types.InlineKeyboardButton("Товары",callback_data="ignore"))
     markup.row(*row)
     row=[]
-    if len(list_items) > item_id:
+    if len(list_items) - 1 < item_id:
         chat_dict[chat_id] = 0
         item_id = 0
     elif item_id < 0:
