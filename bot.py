@@ -222,7 +222,7 @@ def menu(message):
         markup.row(types.KeyboardButton('Создать магазин'))
         markup.row(types.KeyboardButton('Посмотреть все магазины'))
     else:
-    	markup.row(types.KeyboardButton('Создать магазин'))
+        markup.row(types.KeyboardButton('Создать магазин'))
         markup.row(types.KeyboardButton('Посмотреть все магазины'))
         markup.row(types.KeyboardButton('Получить информацию о магазине'))
         markup.row(types.KeyboardButton('Добавить товар'))
