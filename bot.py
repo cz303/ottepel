@@ -224,7 +224,7 @@ def process_choose(message):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         for n in chat_category:
             keyboard.add(*[types.KeyboardButton('Категория: ' + n)])
-            bot.send_message(message.chat.id, 'ваш товар', reply_markup=keyboard)
+            bot.send_message(message.chat.id, reply_markup=keyboard)
             # bot.send_message(message.chat.id, n)
         bot.send_message(chat_id, "Введитие категорию товара")
         bot.register_next_step_handler(message, new_category)
@@ -272,12 +272,9 @@ def new_category(message):
     one_item.category = message.text
     if one_item.category:
         bot.send_message(chat_id, "Такая категория уже существует")
-        bot.register_next_step_handler(message, process_choose)
+        bot.register_next_step_handler(message, new_category)
     else:
-        db.session.commit()
-        bot.send_message(chat_id, "Вы создали новую категорию - " + one_item.category_id)
-        bot.send_message(chat_id, "Введитие название товара")
-        bot.register_next_step_handler(message, new_items)
+
 
 def new_items(message):
     chat_id = message.chat.id
