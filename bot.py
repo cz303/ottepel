@@ -277,10 +277,10 @@ def items_slider(chat_id, list_items, item_id):
     
     markup.row(*row)
     row=[]
-    row.append(types.InlineKeyboardButton("<",callback_data="previous-item"+prev_id))
+    row.append(types.InlineKeyboardButton("<",callback_data="previous-item"+str(prev_id)))
     row.append(types.InlineKeyboardButton("В меню",callback_data="to_menu"))
     row.append(types.InlineKeyboardButton("Редактировать",callback_data="edit"))
-    row.append(types.InlineKeyboardButton(">",callback_data="next-item"+next_id))
+    row.append(types.InlineKeyboardButton(">",callback_data="next-item"+str(next_id)))
     markup.row(*row)
     return markup
 
