@@ -111,7 +111,7 @@ class Orders(db.Model):
 
 
 chat_dict ={}
-chat_category={'первая категория', 'вторая категория'}
+chat_category={'первая категория'}
 # create table
 db.create_all()
 
@@ -266,8 +266,9 @@ def new_market(message):
 def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)        
     for i in range(len(chat_category)):
-        bot.send_message('Доступные категории: ' + chat_category[i])
+        keyboard.add(*[types.KeyboardButton('Название товара: ' + chat_category[i])])
     one_item.category_id = message.text
     db.session.commit()
     bot.send_message(chat_id, "Вы ввели название " + one_item.category_id)
