@@ -183,8 +183,8 @@ def pay(oid):
 
 @app.route('/buy', methods=['POST'])
 def buy():
-    item_id = request.form.get('item')
-    chat_id = request.form.get('phone')
+    item_id = flask.request.form.get('item')
+    chat_id = flask.request.form.get('phone')
     one_item = Item.query.filter_by(id=item_id).first()
     one_market = Ecommerce.query.filter_by(id=one_item.market_id).first()
     new_order = Orders(chat_id, one_item.market_id, one_item.id)
