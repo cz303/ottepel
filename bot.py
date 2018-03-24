@@ -356,7 +356,7 @@ def new_market(message):
 
 def new_category(message):
     chat_id = message.chat.id
-    msg = str(messagxt)
+    msg = str(message.text)
    if msg == 'Создать категорию':
         msg = bot.send_message(chat_id, "Введите новую категорию")
         bot.register_next_step_handler(message, new_category)
