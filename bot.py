@@ -223,7 +223,7 @@ def process_choose(message):
     elif message.text == 'Добавить товар':
         bot.send_message(chat_id, "Введитие категорию товара")
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        items = chat_category.query.all()
+        items = Category.query.all()
         for i in items:
         	print(i.name)
         # bot.send_message(chat_id, "Введитие название товара")
