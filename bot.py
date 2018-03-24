@@ -68,13 +68,15 @@ class Ecommerce(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
+    category = db.Column(db.String(255))
     price = db.Column(db.Integer)
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, name='', price=0, picture=None, market_id=0, filled=False):
+    def __init__(self, name='', category ='',price=0, picture=None, market_id=0, filled=False):
         self.name = name
+        self.category = category
         self.price = price
         self.picture = picture
         self.market_id = market_id
@@ -167,8 +169,10 @@ def process_choose(message):
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
-        bot.send_message(chat_id, "Введитие название товара")
-        bot.register_next_step_handler(message, new_items)
+    	bot.send_message(chat_id, "Введитие категорию товара")
+    	bot.register_next_step_handler(message, new_category)
+        # bot.send_message(chat_id, "Введитие название товара")
+        # bot.register_next_step_handler(message, new_items)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
@@ -200,6 +204,16 @@ def new_market(message):
     bot.send_message(chat_id, "Вы ввели название " + one_item.market)
     bot.send_message(chat_id, "Введите желаемый поддомен:")
     bot.register_next_step_handler(message, new_slug)
+
+def new_category(message):
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.category = message.text
+    db.session.commit()
+    print(one_item.category)
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    bot.send_message(chat_id, "Введитие название товара")
+    bot.register_next_step_handler(message, new_items)
 
 def new_items(message):
     chat_id = message.chat.id
@@ -304,7 +318,7 @@ def next_item(call):
     chat_id = call.message.chat.id
     list_items = Item.query.filter_by(market_id=chat_id).all()
     item_num = int(call.data[9:])
-    markup = items_slider(chat_id, list_items, item_num)
+    markup = items_slider(chat_id, list_items, item_num) 
     bot.delete_message(call.from_user.id, call.message.message_id)
     r = http.request('GET', str(list_items[item_num].picture))
     bot.send_photo(call.from_user.id, r.data, reply_markup=markup)
