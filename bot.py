@@ -222,6 +222,7 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
         bot.send_message(chat_id, "Введитие категорию товара")
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)   
         for i in range(len(chat_category)):
             keyboard.add(*[types.KeyboardButton('Название товара: ' + chat_category[i])])
         bot.register_next_step_handler(message, new_category)
@@ -267,8 +268,7 @@ def new_market(message):
 
 def new_category(message):
     chat_id = message.chat.id
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)        
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()     
     one_item.category_id = message.text
     db.session.commit()
     bot.send_message(chat_id, "Вы ввели название " + one_item.category_id)
