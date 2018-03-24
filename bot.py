@@ -304,7 +304,7 @@ def menu_settings(message):
     bot.register_next_step_handler(message, process_settings)
     return markup
 
-def lol (message):
+def lol (chat_id, list_items, item_id):
     chat_id = message.chat.id
     kg = message.text[1:]
     item = Ecommerce.query.filter_by(domain=kg).first()
@@ -347,7 +347,7 @@ def market_next_item(call):
     bot.answer_callback_query(call.id, text="")
 
 @bot.callback_query_handler(func=lambda call: call.data[0:16] == 'market_prev-item')
-def market_previous_item(call):
+def previous_item(call):
     chat_id = call.message.chat.id
     list_items = Item.query.filter_by(market_id=chat_id).all()
     item_num = int(call.data[16:])
