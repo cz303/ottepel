@@ -188,7 +188,7 @@ def process_choose(message):
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
-    	bot.send_message(chat_id, "Введитие категорию товара")
+    	# bot.send_message(chat_id, "Введитие категорию товара")
     	# bot.register_next_step_handler(message, new_category)
         bot.send_message(chat_id, "Введитие название товара")
         bot.register_next_step_handler(message, new_items)
