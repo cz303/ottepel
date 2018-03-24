@@ -345,14 +345,12 @@ def process_edit(message):
     chat_id = message.chat.id
     item_num = chat_dict[chat_id] # - тут у нас лежит id товара
     if message.text == 'Редактировать имя':
-    	chat_dict[chat_id].name = message.text
         # chat_dict[chat_id] - тут у нас лежит id товара
         #bot.send_message(chat_id, "Введите название магазина")
         #bot.register_next_step_handler(message, new_market)
     elif message.text == 'Редактировать цену':
         #bot.send_message(chat_id, "Введитие название товара")
         #bot.register_next_step_handler(message, new_items)
-        chat_dict[chat_id].prive = message.text
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
