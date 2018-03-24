@@ -141,6 +141,7 @@ def get_pay_link(my_key, merchant_id, order_id, amount):
     data['request']['signature'] = hashlib.sha1(raw.encode('utf-8')).hexdigest()
 
     encoded_body = json.dumps(data)
+    print(encoded_body)
     http = urllib3.PoolManager()
     r = http.request('POST', 'https://api.fondy.eu/api/checkout/redirect/',
         headers={'Content-Type': 'application/json'},
