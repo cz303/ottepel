@@ -222,11 +222,11 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        keyboard.add(*[types.KeyboardButton('Создать категорию')])
         for n in chat_category:
             keyboard.add(*[types.KeyboardButton('Категория: ' + n)])
         bot.send_message(message.chat.id, 'Выберите нужную категорию, если её нет, то создайте', reply_markup=keyboard)
             # bot.send_message(message.chat.id, n)
-        bot.send_message(chat_id, "Введитие категорию товара")
         bot.register_next_step_handler(message, new_category)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
