@@ -334,10 +334,10 @@ def items_slider2(market_id, list_items, item_id):
     row=[]
     if len(list_items) > 1:
         row.append(types.InlineKeyboardButton("<",callback_data="market_prev-item"+str(prev_id)+"="+str(market_id)))
-        row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"+str(next_id)))
+        row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"+str(list_items[next_id].id)))
         row.append(types.InlineKeyboardButton(">",callback_data="market_next-item"+str(next_id)+"="+str(market_id)))
     else:
-        row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"+str(next_id)))
+        row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"+str(list_items[next_id].id)))
         # row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
     markup.row(*row)
     row=[]
