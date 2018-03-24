@@ -258,7 +258,7 @@ def process_choose(message):
         for item in alll:
             string +='Магазин #'+ str(item.domain) + '\n'
         bot.send_message(chat_id, string)
-        bot.register_next_step_handler(message, lol)
+        markup = items_slider(chat_id, list_items, next_id)
     elif message.text == 'Добавить товар':
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         new_cat = keyboard.add(*[types.KeyboardButton('Создать категорию')])
