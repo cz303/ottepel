@@ -229,7 +229,7 @@ def new_market(message):
 def new_category(message):
     chat_id = message.chat.id
     new_item = Item(message.text, 0, None, chat_id)
-    println(new_item.category)
+    print(new_item.category)
     db.session.commit()
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     bot.send_message(chat_id, "Введитие название товара")
