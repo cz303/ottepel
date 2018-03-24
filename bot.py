@@ -181,11 +181,13 @@ def process_choose(message):
 ###### /HERE
 def show_items(message):
     chat_id = message.chat.id
+    all_items = Item.query.filter_by(market_id=chat_id).all()
     for i in range(len(all_items)):
         print(all_items[i].name)
         print(all_items[i].price)
         markup = all_items[i].name
         bot.send_message(message.chat.id, "Ваш товар", reply_markup=markup)
+
 def new_market(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
