@@ -256,7 +256,7 @@ def process_choose(message):
         alll = Ecommerce.query.all()
         result = []
         for item in alll:
-            liss = Item.query.filter_by(market_id=item.id).all()
+            liss = Item.query.filter_by(market_id=item.chat_id).all()
             if len(liss) > 0:
                 result.append(item)
         string = ''
@@ -286,7 +286,7 @@ def process_choose(message):
         list_orders = Orders.query.filter_by(market_id=chat_id).all()
         string = ''
         for order in list_orders:
-            item = Orders.query.filter_by(market_id=order.item_id).first()
+            item = Item.query.filter_by(id=order.item_id).first()
             if order.paid:
                 string += 'Оплаченный заказ #'+order.chat_id+' от @'+str(order.chat_id)+' '+str(order.datetime)+', товар: '+item.name+' за '+str(item.price)+'\n'
             else:
