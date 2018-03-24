@@ -186,7 +186,7 @@ def process_choose(message):
         list_items = Item.query.filter_by(market_id=chat_id).all()
         markup = items_slider(chat_id, list_items, next_id)
         r = http.request('GET', str(list_items[next_id].picture))
-        bot.send_photo(call.from_user.id, r.data, reply_markup=markup)
+        bot.send_photo(chat_id, r.data, reply_markup=markup)
     elif message.text.startswith('Редактировать товар #'):
         bot.send_message(chat_id, "Вы хотели отредактировать товар #" + message.text[21:], reply_markup=menu(message))
     else:
