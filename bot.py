@@ -330,7 +330,7 @@ def to_menu(call):
 def to_edit(call):
     # get id of item
     item_num = int(call.data[4:])
-    bot.send_message(chat.id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(call.message, item_num))
+    bot.send_message(message.chat.id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(call.message, item_num))
     
 def edit_menu(message, item_num):
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
