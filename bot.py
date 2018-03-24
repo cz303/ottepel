@@ -78,7 +78,7 @@ class Item(db.Model):
     def __init__(self, name='', category_items='', price=0, picture=None, market_id=0, filled=False, category_id=0):
         self.name = name
         self.price = price
-        self.category_items = category_items
+        # self.category_items = category_items
         self.picture = picture
         self.market_id = market_id
         self.category_id = category_id
