@@ -179,6 +179,8 @@ def process_choose(message):
         # msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
         for i in range(len(all_items)):
             keybord.add(*[types.KeyboardButton(all_items[i].name)])
+            keybord.add(*[types.KeyboardButton(all_items[i].price)])
+            msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
             print(all_items[i].name)
             print(all_items[i].price)
             
