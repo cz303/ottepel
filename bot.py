@@ -362,6 +362,7 @@ def new_category(message):
         item = Category.query.filter_by(name=msg).first()
         if item:
             item_dict[chat_id] = item.id
+            bot.register_next_step_handler(message, new_category)
         else:
             cat = Category(msg)
             db.session.add(item)
