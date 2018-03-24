@@ -334,28 +334,6 @@ def edit(call):
     markup.row(*row)
     return markup
 
-
-@bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
-def edit_1(call):
-    bot.send_message(call.message.chat.id, "Выберите поле для редактирования"+call.data[4:], reply_markup=menu(call.message))
-    markup = types.InlineKeyboardMarkup()
-    row.append(types.InlineKeyboardButton("Название", ))
-    row.append(types.InlineKeyboardButton("Цена", ))
-    row.append(types.InlineKeyboardButton("Картинка", ))
-    markup.row(*row)
-    return markup
-# TRY_!
-    
-def edit(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
-    chat_id = message.chat.id
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    row.append(types.InlineKeyboardButton("Название"))
-    row.append(types.InlineKeyboardButton("Цена"))
-    row.append(types.InlineKeyboardButton("Картинка"))
-    return markup
-# END
-
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
 sleep(1)
