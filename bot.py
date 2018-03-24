@@ -271,12 +271,12 @@ def new_category(message):
     one_item.category = message.text
     if one_item.category == 'Создать категорию':
         bot.send_message(chat_id, "Введите новую категорию")
-        # for n in chat_category:
-        #     if message.text == n:
-        #         bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
-    else:
-        bot.send_message(chat_id, "Данная категория создана!")
-        bot.register_next_step_handler(message, new_category)
+        for n in chat_category:
+            if message.text == n:
+                bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
+            else:
+                bot.send_message(chat_id, "Данная категория создана!")
+                bot.register_next_step_handler(message, new_category)
     # if one_item.category:
     #     bot.send_message(chat_id, "Такая категория уже существует")
     #     bot.register_next_step_handler(message, new_category)
