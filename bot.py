@@ -331,13 +331,13 @@ def lol (message):
             row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
             # row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
         markup.row(*row)	
-        return markup
+        bot.send_message(chat_id, "Магазин", reply_markup=markup)
     else:
         bot.send_message(chat_id, "Такого магазина нет")
         bot.register_next_step_handler(message, menu)
 
 @bot.callback_query_handler(func=lambda call: call.data[0:16] == 'market_next-item')
-def next_item(call):
+def market_next_item(call):
     chat_id = call.message.chat.id
     item_num = int(call.data[16:])
     markup = lol(chat_id, item, item_num) 
@@ -347,7 +347,7 @@ def next_item(call):
     bot.answer_callback_query(call.id, text="")
 
 @bot.callback_query_handler(func=lambda call: call.data[0:16] == 'market_prev-item')
-def previous_item(call):
+def market_previous_item(call):
     chat_id = call.message.chat.id
     list_items = Item.query.filter_by(market_id=chat_id).all()
     item_num = int(call.data[16:])
