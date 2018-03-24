@@ -179,7 +179,15 @@ def pay(oid):
     order = Orders.query.filter_by(id=oid).first()
     item = Item.query.filter_by(id=order.item_id).first()
     ecommerce = Ecommerce.query.filter_by(chat_id=item.market_id).first()
-    return flask.render_template('pay.html', item=item, ecommerce=ecommerce)
+    return flask.render_template('pay.html', item=item, ecommerce=ecommerce, oid=oid)
+
+@app.route('/confirm/<oid>', methods=['GET'])
+def confirmm(oid):
+    order = Orders.query.filter_by(id=oid).first()
+    order.paid = True
+    db.session.commit()
+    bot.send_message(order.market_id, 'Заказ #'+str(order.id)+ ' оплачен!')
+    return flask.redirect("https://dynamic-door.ru/", code=302)
 
 @app.route('/buy', methods=['POST'])
 def buy():
