@@ -284,7 +284,7 @@ def items_slider(chat_id, list_items, item_id):
     if next_id > len(list_items) - 1:
         next_id = 0
 
-    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ str(list_items[item_id].name), callback_data="ignore"))
+    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name, callback_data="ignore"))
 
     markup.row(*row)
     row=[]
@@ -348,10 +348,6 @@ def process_edit(message):
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     if message.text == 'Редактировать имя':
         bot.send_message(chat_id, "Введите новое название товара")
-        one_item.name = message.text
-        db.session.add(one_item)
-        db.session.commit()
-        bot.register_next_step_handler(message, process_choose)
     elif message.text == 'Редактировать цену':
         bot.send_message(chat_id, "Введитие новую цену")
         bot.register_next_step_handler(message, new_price)
