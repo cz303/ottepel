@@ -348,7 +348,7 @@ def process_edit(message):
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     if message.text == 'Редактировать имя':
         bot.send_message(chat_id, "Введите новое название товара")
-   	    one_item.name = message.text
+        one_item.name = message.text
         db.session.add(one_item)
         db.session.commit()
         bot.register_next_step_handler(message, menu)
