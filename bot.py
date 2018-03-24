@@ -100,7 +100,7 @@ class Orders(db.Model):
     chat_id = db.Column(db.String(255))
     market_id = db.Column(db.Integer)
     datetime = db.Column(db.DateTime, default=datetime.datetime.utcnow())
-    item_id = db.Colum(db.Integer)
+    item_id = db.Column(db.Integer)
     paid = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, name=''):
