@@ -374,7 +374,7 @@ def market_previous_item(call):
 def to_menu(call):
     item_id = int(call.data[11:])
     one_item = Item.query.filter_by(id=item_id).first()
-    one_market = Ecommerce.query.filter_by(id=one_item.market_id).first()
+    one_market = Ecommerce.query.filter_by(chat_id=one_item.market_id).first()
     new_order = Orders(chat_id, one_item.market_id, one_item.id)
     db.session.add(new_order)
     db.session.commit()
