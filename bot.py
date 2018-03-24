@@ -173,9 +173,9 @@ def process_choose(message):
     elif message.text == 'Вывести количество товаров': 
         all_items = Item.query.filter_by(market_id=chat_id).all()
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
-        keybord = types.InlineKeyboardMarkup()        
+        keybord = types.ReplyKeyboardMarkup(resize_keyboard=True)        
         for i in range(len(all_items)):
-            keybord.add(*[types.KeyboardButton(text=name, callback_data=name) 'Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price)])
+            keybord.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price)+all_items[i].picture)])
             msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
     else:
         bot.reply_to(message, "Команда не распознана")
