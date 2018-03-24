@@ -178,7 +178,7 @@ def process_choose(message):
         keybord = types.ReplyKeyboardMarkup(resize_keyboard=True)        
         for i in range(len(all_items)):
             keybord.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))#+ bot.send_photo(chat_id, all_items[i].picture))])
-            msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
+        msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
     elif message.text == 'Список товаров':
         next_id = 0
         list_items = Item.query.filter_by(market_id=chat_id).all()
