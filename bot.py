@@ -226,13 +226,13 @@ def new_market(message):
     bot.send_message(chat_id, "Введите желаемый поддомен:")
     bot.register_next_step_handler(message, new_slug)
 
-def new_category(message):
-    chat_id = message.chat.id
-    new_item = Item('', message.text, 0, None, chat_id)
-    db.session.commit()
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    bot.send_message(chat_id, "Введитие название товара")
-    bot.register_next_step_handler(message, new_items)
+# def new_category(message):
+#     chat_id = message.chat.id
+#     new_item = Item('', message.text, 0, None, chat_id)
+#     db.session.commit()
+#     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+#     bot.send_message(chat_id, "Введитие название товара")
+#     bot.register_next_step_handler(message, new_items)
 
 def new_items(message):
     chat_id = message.chat.id
