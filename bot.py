@@ -414,8 +414,7 @@ def change_picture(message):
 bot.remove_webhook()
 sleep(1)
 # Set webhook
-bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
-                certificate=open(WEBHOOK_SSL_CERT, 'r'))
+bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH)#,certificate=open(WEBHOOK_SSL_CERT, 'r'))
 
 # Start flask server
 app.run(host='127.0.0.1',
