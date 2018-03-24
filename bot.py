@@ -356,13 +356,13 @@ def new_market(message):
 
 def new_category(message):
     chat_id = message.chat.id
-    msg = message.text
-    if msg == 'Создать категорию':
+    msg = str(messagxt)
+   if msg == 'Создать категорию':
         msg = bot.send_message(chat_id, "Введите новую категорию")
         bot.register_next_step_handler(message, new_category)
     else:
         # либо прислал новую категорию, либо выбрал существующую
-        item = Category.query.filter_by(name=str(msg)).first()
+        item = Category.query.filter_by(name=msg).first()
         if item:
             item_dict[chat_id] = item.id
         else:
