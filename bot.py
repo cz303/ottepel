@@ -324,7 +324,7 @@ def previous_item(call):
 def to_menu(call):
     bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
 
-@bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
+@bot.callback_query_handler(func=lambda call: call.data == 'edit')
 def edit(call):
     bot.send_message(call.message.chat.id, "Редактируем #"+call.data[4:], reply_markup=menu(call.message))
     markup = types.InlineKeyboardMarkup()
