@@ -367,7 +367,7 @@ def items_slider(chat_id, list_items, item_id):
     else:
         row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
         row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
-    markup.row(*row)
+    markup.row(*row)	
     return markup
 
 @bot.callback_query_handler(func=lambda call: call.data[0:9] == 'next-item')
