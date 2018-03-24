@@ -181,7 +181,7 @@ def category(catid):
     ecommerce = Ecommerce.query.filter_by(item.market_id).first
     return flask.render_template('pay.html', item=item, ecommerce=ecommerce)
 
-@app.route('/buy', methods=['POST'])
+'''@app.route('/buy', methods=['POST'])
 def buy():
     item_id = request.form.get('item')
     chat_id = request.form.get('chat_id')
@@ -191,7 +191,7 @@ def buy():
     db.session.add(new_order)
     db.session.commit()
     pay_link = get_pay_link(one_market.pkey1, one_market.merchant_id, new_order.id, one_item.price)
-    return pay_link
+    return pay_link '''
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
@@ -386,9 +386,7 @@ def to_menu(call):
     new_order = Orders(call.message.chat.id, one_item.market_id, one_item.id)
     db.session.add(new_order)
     db.session.commit()
-    pay_link = get_pay_link(one_market.pkey1, one_market.merchant_id, new_order.id, one_item.price)
-    print(pay_link)
-    bot.send_message(call.message.chat.id, pay_link)
+    bot.send_message(call.message.chat.id, 'https://dynamic-door.ru/pay/' + str(new_order.id))
 
 #def get_pay_link(my_key, merchant_id, order_id, amount):
 #    print("Ghkexbkjcm")
