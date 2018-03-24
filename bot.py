@@ -339,6 +339,7 @@ def edit_menu(message, item_num):
     chat_dict[chat_id] = item_num
     markup.row(types.KeyboardButton('Редактировать имя'))
     markup.row(types.KeyboardButton('Редактировать цену'))
+    markup.row(types.KeyboardButton('В меню'))
     bot.register_next_step_handler(message, process_edit)
     return markup
 
@@ -352,6 +353,8 @@ def process_edit(message):
     elif message.text == 'Редактировать цену':
         bot.send_message(chat_id, "Введитие новую цену")
         bot.register_next_step_handler(message, change_price)
+    elif message.text == 'В меню':
+         bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
@@ -362,8 +365,7 @@ def change_item(message):
     one_item = Item.query.filter_by(id=item_num).first()
     one_item.name = message.text
     db.session.commit()
-    bot.send_message(chat_id, "Название изменено.") 
-    bot.register_next_step_handler(message, menu)
+    bot.send_message(chat_id, "Название изменено. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num)) 
 
 def change_price(message):
     chat_id = message.chat.id
@@ -378,8 +380,7 @@ def change_price(message):
         if a > 0:
             one_item.price = a
             db.session.commit()
-            bot.send_message(chat_id, "Цена изменена.")
-            bot.register_next_step_handler(message, menu)
+            bot.send_message(chat_id, "Цена изменена. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
         else:
             bot.send_message(chat_id, "Введите верное значение")
             bot.register_next_step_handler(message, change_price)
