@@ -68,8 +68,8 @@ class Ecommerce(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
+    category = db.Column(db.String(255))
     price = db.Column(db.Integer)
-    # category = db.Column(db.String(255))
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
     category_id = db.Column(db.Integer)
