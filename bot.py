@@ -76,7 +76,7 @@ class Item(db.Model):
     price = db.Column(db.Integer)
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
-      = db.Column(db.Integer)
+    category_id = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, name='', price=0, picture=None, market_id=0, filled=False, category_id=0):
@@ -99,6 +99,21 @@ class Category(db.Model):
 
     def __repr__(self):
         return '<Category %r>' % self.name
+
+class Orders(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    chat_id = db.Column(db.String(255))
+    market_id = db.Column(db.Integer)
+    datetime = db.DateTime(default=datetime.datetime.utcnow)
+    item_id = db.Colum(db.Integer)
+    paid = db.Column(db.Boolean, default=False, nullable=False)
+
+    def __init__(self, name=''):
+        self.name = name
+
+    def __repr__(self):
+        return '<Order for %r>' % self.chat_id
+
 
 chat_dict ={}
 # create table
