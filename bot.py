@@ -307,6 +307,7 @@ def menu_settings(message):
 def lol (message):
     chat_id = message.chat.id
     kg = message.text[9:]
+    print(kg)
     item = Ecommerce.query.filter_by(market=kg).first()
     if item:
         markup = types.InlineKeyboardMarkup()
