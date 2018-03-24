@@ -118,7 +118,7 @@ class Orders(db.Model):
 
 
 chat_dict ={}
-chat_category={'первая категория', 'вторая категория'}
+chat_category={'Автомобили', 'Хобби', 'Чушь', 'и ещё', 'куча', 'всяких', 'категорий'}
 # create table
 db.create_all()
 
@@ -224,6 +224,8 @@ def menu(message):
         markup.row(types.KeyboardButton('Добавить товар'))
         if Item.query.filter_by(market_id=chat_id).first():
             markup.row(types.KeyboardButton('Список товаров'))
+        elif Orders.query.filter_by(market_id=chat_id).all():
+            markup.row(types.KeyboardButton('Список заказов'))
         #markup.row(types.KeyboardButton('Вывести количество товаров'))
     bot.register_next_step_handler(message, process_choose)
     return markup
@@ -248,10 +250,12 @@ def process_choose(message):
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
-        bot.send_message(chat_id, "Введитие категорию товара")
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        new_cat = keyboard.add(*[types.KeyboardButton('Создать категорию')])
+        for n in chat_category:
+            keyboard.add(*[types.KeyboardButton('Категория: ' + n)])
+        bot.send_message(message.chat.id, 'Выберите нужную категорию, если её нет, то создайте', reply_markup=keyboard)
         bot.register_next_step_handler(message, new_category)
-        # bot.send_message(chat_id, "Введитие название товара")
-        # bot.register_next_step_handler(message, new_items)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
@@ -270,6 +274,12 @@ def process_choose(message):
         markup = items_slider(chat_id, list_items, next_id)
         r = http.request('GET', str(list_items[next_id].picture))
         bot.send_photo(chat_id, r.data, reply_markup=markup)
+    elif message.text == 'Список заказов':
+        next_id = 0
+        list_orders = Orders.query.filter_by(market_id=chat_id).all()
+        markup = items_slider(chat_id, list_orders, next_id)
+        r = http.request('GET', str(list_orders[next_id].picture))
+        bot.send_photo(chat_id, r.data, reply_markup=markup)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
@@ -287,11 +297,17 @@ def new_market(message):
 def new_category(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    one_item.category_id = message.text
-    db.session.commit()
-    bot.send_message(chat_id, "Вы ввели название " + one_item.category_id)
-    bot.send_message(chat_id, "Введитие название товара")
-    bot.register_next_step_handler(message, new_items)
+    one_item.category = message.text
+    if one_item.category == 'Создать категорию':
+        bot.send_message(chat_id, "Введите новую категорию")
+        # for n in chat_category:
+        #     if message.text == n:
+        #         bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
+        #         bot.register_next_step_handler(message, new_category)
+        #     else:
+        #         bot.send_message(chat_id, "Данная категория создана!")
+    else:
+        bot.register_next_step_handler(message, new_items)
 
 def new_items(message):
     chat_id = message.chat.id
@@ -376,7 +392,7 @@ def items_slider(chat_id, list_items, item_id):
     if next_id > len(list_items) - 1:
         next_id = 0
 
-    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + str(list_items.chat_category(list_items[item_id].category_id)), callback_data="ignore"))
+    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name, callback_data="ignore"))
 
     markup.row(*row)
     row=[]
@@ -388,13 +404,13 @@ def items_slider(chat_id, list_items, item_id):
     else:
         row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
         row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
-    markup.row(*row)
+    markup.row(*row)	
     return markup
 
 @bot.callback_query_handler(func=lambda call: call.data[0:9] == 'next-item')
 def next_item(call):
     chat_id = call.message.chat.id
-    list_items = Item.query.filter_by(market_id=chat_id).all()
+    list_items = Item.query.filter_by(market_id=chat_id).all()	
     item_num = int(call.data[9:])
     markup = items_slider(chat_id, list_items, item_num) 
     bot.delete_message(call.from_user.id, call.message.message_id)
