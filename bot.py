@@ -267,6 +267,7 @@ def new_market(message):
 
 def new_category(message):
     chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.category = message.text
     one_item.category = Category.filter_by(Category=message.text)
     if one_item.category:
