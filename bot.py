@@ -175,7 +175,7 @@ def process_choose(message):
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
         keybord = types.InlineKeyboardMarkup()        
         for i in range(len(all_items)):
-            keybord.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))])
+            keybord.add(*[types.KeyboardButton(text='Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price, callback_data=name))])
             msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
     else:
         bot.reply_to(message, "Команда не распознана")
