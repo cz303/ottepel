@@ -372,6 +372,7 @@ def edit_cat:
             bot.register_next_step_handler(message, new_category)
         else:
             bot.send_message(chat_id, "Данная категория создана!")
+
 def new_items(message):
     chat_id = message.chat.id
     new_item = Item(message.text, 0, None, chat_id)
