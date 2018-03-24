@@ -99,7 +99,7 @@ class Orders(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     chat_id = db.Column(db.String(255))
     market_id = db.Column(db.Integer)
-    datetime = db.DateTime(default=datetime.datetime.utcnow)
+    datetime = db.DateTime(default=datetime.utcnow)
     item_id = db.Colum(db.Integer)
     paid = db.Column(db.Boolean, default=False, nullable=False)
 
