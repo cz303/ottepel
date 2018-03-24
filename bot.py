@@ -361,18 +361,20 @@ def new_category(message):
     msg = message.text
     if msg == 'Создать категорию':
         bot.send_message(chat_id, "Введите новую категорию")
-        bot.register_next_step_handler(message, edit_cat)
-    else:
-        bot.register_next_step_handler(message, new_items)
-
-def edit_cat(message):
-    for n in chat_category:
-        if message.text == n:
+        item = chat_category.query.filter_by(message.text=chat_category).first()
+		if item:
             bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
             bot.register_next_step_handler(message, new_category)
         else:
             bot.send_message(chat_id, "Данная категория создана!")
+    else:
+        bot.register_next_step_handler(message, new_items)
 
+# def edit_cat(message):
+# 	chat_id = message.chat.id
+#     for n in chat_category:
+#         if message.text == n:
+            
 def new_items(message):
     chat_id = message.chat.id
     new_item = Item(message.text, 0, None, chat_id)
