@@ -146,6 +146,7 @@ def menu(message):
     bot.register_next_step_handler(message, process_choose)
     return markup
 
+
 @bot.message_handler(commands=['start'])
 def start(message):
     chat_id = message.chat.id
@@ -324,18 +325,25 @@ def previous_item(call):
 def to_menu(call):
     bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
 
-@bot.callback_query_handler(func=lambda call: call.data == 'edit')
-def edit(call):
-    bot.send_message(call.message.chat.id, "Редактируем #", reply_markup=menu(call.message))
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
+@bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
+def edit_1(call):
+    bot.send_message(call.message.chat.id, "Выберите поле для редактирования"+call.data[4:], reply_markup=menu(call.message))
+        row.append(types.InlineKeyboardButton("Название", ))
+        row.append(types.InlineKeyboardButton("Цена", ))
+        row.append(types.InlineKeyboardButton("Картинка", ))
 
-        markup.row(types.KeyboardButton('Редактировать имя товара'))
-        markup.row(types.KeyboardButton('Редактировать цену'))
-        # markup.row(types.KeyboardButton('Список товаров'))
-        #markup.row(types.KeyboardButton('Вывести количество товаров'))
-    return markup
 
+# TRY_!
     
+def edit(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+        row.append(types.InlineKeyboardButton("Название"))
+        row.append(types.InlineKeyboardButton("Цена"))
+        row.append(types.InlineKeyboardButton("Картинка"))
+return markup
+# END
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
