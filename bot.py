@@ -87,7 +87,6 @@ class Item(db.Model):
 # create table
 db.create_all()
 
-chat_dict = {}
 ## СМОТРИ ТУТ!
 # --Добавляем нового чувака в базу, заполняем поля:
 # ecommerce_item = Ecommerce('admin', 'admin@example.com')
@@ -266,36 +265,40 @@ def items_slider(chat_id, list_items, item_id):
     row.append(types.InlineKeyboardButton("Товары",callback_data="ignore"))
     markup.row(*row)
     row=[]
-    if len(list_items) - 1 < item_id:
-        chat_dict[chat_id] = 0
-        item_id = 0
-    elif item_id < 0:
-        chat_dict[chat_id] = len(list_items) - 1
-        item_id = len(list_items) - 1
+    prev_id = item_id - 1
+    next_id = item_id + 1
+
+    if prev_id < 0:
+        prev_id = len(list_items) - 1
+    if next_id > len(list_items) - 1:
+        next_id = 0
+
     row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name, callback_data="ignore"))
     
     markup.row(*row)
     row=[]
-    row.append(types.InlineKeyboardButton("<",callback_data="previous-item"))
+    row.append(types.InlineKeyboardButton("<",callback_data="previous-item"+prev_id))
     row.append(types.InlineKeyboardButton("В меню",callback_data="to_menu"))
     row.append(types.InlineKeyboardButton("Редактировать",callback_data="edit"))
-    row.append(types.InlineKeyboardButton(">",callback_data="next-item"))
+    row.append(types.InlineKeyboardButton(">",callback_data="next-item"+next_id))
     markup.row(*row)
     return markup
 
-@bot.callback_query_handler(func=lambda call: call.data == 'next-item')
+@bot.callback_query_handler(func=lambda call: call.data[0:9] == 'next-item')
 def next_item(call):
     chat_id = call.message.chat.id
     list_items = Item.query.filter_by(market_id=chat_id).all()
-    markup = items_slider(chat_id, list_items, chat_dict[chat_id]+1)
+    item_num = int(call.data[9:])
+    markup = items_slider(chat_id, list_items, item_num)
     bot.edit_message_text("Товары", call.from_user.id, call.message.message_id, reply_markup=markup)
     bot.answer_callback_query(call.id, text="")
 
-@bot.callback_query_handler(func=lambda call: call.data == 'previous-item')
+@bot.callback_query_handler(func=lambda call: call.data[0:9] == 'prev-item')
 def previous_item(call):
     chat_id = call.message.chat.id
     list_items = Item.query.filter_by(market_id=chat_id).all()
-    markup = items_slider(chat_id, list_items, chat_dict[chat_id]-1)
+    item_num = int(call.data[9:])
+    markup = items_slider(chat_id, list_items, item_num)
     bot.edit_message_text("Товары", call.from_user.id, call.message.message_id, reply_markup=markup)
     bot.answer_callback_query(call.id, text="")
 
