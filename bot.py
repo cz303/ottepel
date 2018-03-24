@@ -370,7 +370,6 @@ def new_category(message):
             item_dict[chat_id] = cat.id
     else:
         # либо прислал новую категорию, либо выбрал существующую
-
         bot.send_message(chat_id, "Введите название товара")
         bot.register_next_step_handler(message, new_items)
 
@@ -382,7 +381,7 @@ def new_category(message):
 def new_items(message):
     chat_id = message.chat.id
     #name='', price=0, picture=None, market_id=0, filled=False, category_id=0):
-    new_item = Item(message.text, 0, None, chat_id, False, item_dict[chat_id])
+    new_item = Item(message.text, 0, None, chat_id, False, chat_id)
     db.session.add(new_item)
     db.session.commit()
     bot.send_message(chat_id, "Введите цену товара")
