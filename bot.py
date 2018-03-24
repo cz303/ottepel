@@ -222,6 +222,7 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
         bot.send_message(chat_id, "Введитие категорию товара")
+        bot.send_message(chat_id, "Категории: " + chat_category[0])
         bot.register_next_step_handler(message, new_category)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
@@ -254,7 +255,6 @@ def process_choose(message):
 ###### /HERE
 def new_market(message):
     chat_id = message.chat.id
-    bot.send_message(chat_id, "Категории: " + chat_category[0])
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     one_item.market = message.text
     db.session.commit()
