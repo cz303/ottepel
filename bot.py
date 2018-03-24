@@ -195,7 +195,7 @@ def menu(message):
         markup.row(types.KeyboardButton('Добавить товар'))
         if Item.query.filter_by(market_id=chat_id).first():
             markup.row(types.KeyboardButton('Список товаров'))
-        elif Orders.query.filter_by(market_id=chat_id).all()
+        elif Orders.query.filter_by(market_id=chat_id).all():
             markup.row(types.KeyboardButton('Список заказов'))
         #markup.row(types.KeyboardButton('Вывести количество товаров'))
     bot.register_next_step_handler(message, process_choose)
