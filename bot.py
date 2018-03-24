@@ -142,7 +142,7 @@ def category(catid):
     return flask.render_template('category.html', category=category, products=products)
 
 @app.route('/buy', methods=['POST'])
-def index(username):
+def buy(username):
 
     one_item = Ecommerce.query.filter_by(domain=username).first()
     if not one_item:
