@@ -174,11 +174,8 @@ def process_choose(message):
         all_items = Item.query.filter_by(market_id=chat_id).all()
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
         keybord = types.ReplyKeyboardMarkup(resize_keyboard=True)        
-        # keybord.add(*[types.KeyboardButton(all_items[i].name, for i in range(len(all_items)))])
-        # msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
         for i in range(len(all_items)):
-            keybord.add(*[types.KeyboardButton(all_items[i].name + ' ' + str(all_items[i].price))])
-            # keybord.add(*[types.KeyboardButton(all_items[i].price)])
+            keybord.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))])
             msg = bot.send_message(message.chat.id, 'ваш товар', reply_markup=keybord)
             print(all_items[i].name)
             print(all_items[i].price)
