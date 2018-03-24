@@ -327,13 +327,11 @@ def to_menu(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'edit')
 def edit(call):
     bot.send_message(call.message.chat.id, "Редактируем #", reply_markup=menu(call.message))
-    markup = types.InlineKeyboardMarkup()
-    row=[]
-    row.append(types.InlineKeyboardButton("Редактировать название товара",callback_data="edit_name"))
-    row.append(types.InlineKeyboardButton("Редактировать цену",callback_data="edit_price"))
-    markup.row(*row)
-    return markup
-    # row.append(types.InlineKeyboardButton("Поменять картинку",callback_data="edit"+str(list_items[item_id].id)))
+	key_default = types.ReplyKeyboardMarkup(resize_keyboard=True)
+	key_default.row(types.KeyboardButton('Button 1'))
+	key_default.row(types.KeyboardButton('Button 2'))
+	key_default.row(types.KeyboardButton('Button 3'))
+
     
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
