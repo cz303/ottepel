@@ -6,7 +6,6 @@ import json
 import calendar
 import flask
 import logging
-import hashlib
 from time import sleep
 from slugify import slugify
 from config import *
@@ -55,10 +54,6 @@ class Ecommerce(db.Model):
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
     domain = db.Column(db.String(255))
-    api_bot = db.Column(db.String(255))
-    pkey1 = db.Column(db.String(255))
-    pkey2 = db.Column(db.String(255))
-    merchant_id = db.Column(db.String(255))
 
     def __init__(self, chat_id, has_shop=False, market=None, location=None, domain=None):
         self.chat_id = chat_id
@@ -208,10 +203,10 @@ def process_choose(message):
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
-        # bot.send_message(chat_id, "Введитие категорию товара")
-        # bot.register_next_step_handler(message, new_category)
-        bot.send_message(chat_id, "Введитие название товара")
-        bot.register_next_step_handler(message, new_items)
+        bot.send_message(chat_id, "Введитие категорию товара")
+        bot.register_next_step_handler(message, new_category)
+        # bot.send_message(chat_id, "Введитие название товара")
+        # bot.register_next_step_handler(message, new_items)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
@@ -244,12 +239,15 @@ def new_market(message):
     bot.send_message(chat_id, "Введите желаемый поддомен:")
     bot.register_next_step_handler(message, new_slug)
 
-# def new_category(message):
-#     chat_id = message.chat.id
-#     one_item.category = message.text
-#     db.session.commit()
-#     bot.send_message(chat_id, "Введитие название товара")
-#     bot.register_next_step_handler(message, new_items)
+def new_category(message):
+    chat_id = message.chat.id
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    one_item.category_id = message.text
+    # db.session.add(new_item)
+    db.session.commit()
+    bot.send_message(chat_id, "Вы ввели название " + one_item.category_id)
+    bot.send_message(chat_id, "Введитие название товара")
+    bot.register_next_step_handler(message, new_items)
 
 def new_items(message):
     chat_id = message.chat.id
@@ -334,7 +332,7 @@ def items_slider(chat_id, list_items, item_id):
     if next_id > len(list_items) - 1:
         next_id = 0
 
-    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name, callback_data="ignore"))
+    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + str(list_items[item_id].category_id), callback_data="ignore"))
 
     markup.row(*row)
     row=[]
@@ -454,36 +452,6 @@ def change_picture(message):
     else:
         bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
         bot.register_next_step_handler(message, new_picture)
-
-
-def buy():
-    my_key = 'TohkK63Gmnsplp5GoeChftrQvi440CDe'
-    merchant_id = '1408560'
-    data = {
-        "request":{
-            "order_id": "123",
-            "order_desc": "Test payment",
-            "currency":"RUB",
-            "amount":"125",
-            "merchant_id":merchant_id
-        }
-    }
-    assert 'request' in data.keys()
-    keys = sorted(data['request'].keys())
-    values = [my_key]
-    values += [data['request'][key] for key in keys]
-    raw = '|'.join(values)
-    data['request']['signature'] = hashlib.sha1(raw.encode('utf-8')).hexdigest()
-
-    encoded_body = json.dumps(data)
-    http = urllib3.PoolManager()
-    r = http.request('POST', 'https://api.fondy.eu/api/checkout/redirect/',
-        headers={'Content-Type': 'application/json'},
-        body=encoded_body)
-
-    print r.read()
-
-
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
