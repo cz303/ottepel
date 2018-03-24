@@ -365,7 +365,7 @@ def new_category(message):
     else:
         bot.register_next_step_handler(message, new_items)
 
-def edit_cat:
+def edit_cat(message):
     for n in chat_category:
         if message.text == n:
             bot.send_message(chat_id, "Данная категория существует, посмотрите внимательней")
