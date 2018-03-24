@@ -71,17 +71,29 @@ class Item(db.Model):
     price = db.Column(db.Integer)
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
+    category_id = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, name='', price=0, picture=None, market_id=0, filled=False):
+    def __init__(self, name='', price=0, picture=None, market_id=0, category_id=0, filled=False):
         self.name = name
         self.price = price
         self.picture = picture
         self.market_id = market_id
         self.filled = filled
+        self.category_id = category_id
 
     def __repr__(self):
         return '<Item #%r>' % self.id
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    
+    def __init__(self, name=''):
+        self.name = name
+
+    def __repr__(self):
+        return '<Category %r>' % self.name
 
 chat_dict ={}
 # create table
@@ -103,10 +115,14 @@ db.create_all()
 # one_item = Ecommerce.query.filter_by(chat_id='123321').first()
 @app.route('/', methods=['GET'])
 def mainw():
+    categories = Category.query.all()
+    products = Item.query.all()
     return flask.render_template('index.html', categories=categories, products=products)
 
 @app.route('/category/<catname>', methods=['GET'])
 def category(catname):
+    category = Category.query.first()
+    products = Item.query.filter_by(category_id=category.id).all()
     return flask.render_template('category.html', category=category, products=products)
 
 @app.route('/merchant/<username>', methods=['GET'])
