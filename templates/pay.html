@@ -22,7 +22,7 @@ function checkoutInit(url) {
 var button = $ipsp.get("button");
 button.setMerchantId({{ecommerce.merchant_id}});
 button.setAmount({{item.price}}, 'RUB', true);
-button.setHost('dynamic-door.ru');
+button.setHost('api.fondy.eu');
 checkoutInit(button.getUrl());
 </script>
 
