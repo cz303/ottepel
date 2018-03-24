@@ -374,7 +374,15 @@ def market_previous_item(call):
 
 @bot.callback_query_handler(func=lambda call: call.data == 'market_menu')
 def to_menu(call):
-    bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
+	my_key = Ecommerce.query.filter_by(pkey1=market_id).all()
+	merchant_id = Ecommerce.query.filter_by(merchant_id=market_id).all()
+    order_id = Order.query.filter_by(id=market_id)
+    amount = Item.query.filter_by(price = market_id)
+	markup = get_pay_link(my_key, merchant_id, order_id, amount)
+    bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=markup)
+
+def get_pay_link(my_key, merchant_id, order_id, amount):
+	print("Ghkexbkjcm")
 
 
 # @bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
