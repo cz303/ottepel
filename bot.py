@@ -173,18 +173,19 @@ def process_choose(message):
     elif message.text == 'Вывести количество товаров': 
         all_items = Item.query.filter_by(market_id=chat_id).all()
         bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
-        keyboard = types.InlineKeyboardMarkup()
-        for i in range(len(all_items)):
-            callback_button = types.InlineKeyboardButton(text=all_items[i].name, callback_data='Следующий шаг')
-            print(all_items[i].name)
-            print(all_items[i].price)
-            keyboard.row(types.KeyboardButton("asd"))
+        bot.register_next_step_handler(message, show_items)
     else:
         bot.reply_to(message, "Команда не распознана")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
 
 ###### /HERE
-
+def show_items(message):
+    chat_id = message.chat.id
+    for i in range(len(all_items)):
+        print(all_items[i].name)
+        print(all_items[i].price)
+        markup = all_items[i].name
+        bot.send_message(message.chat.id, "Ваш товар", reply_markup=markup)
 def new_market(message):
     chat_id = message.chat.id
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
