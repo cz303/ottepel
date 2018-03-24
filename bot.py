@@ -221,8 +221,8 @@ def process_choose(message):
         bot.send_message(chat_id, "Введите название магазина")
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
+        bot.send_message(message.chat.id, chat_category[0])
         bot.send_message(chat_id, "Введитие категорию товара")
-        bot.send_message(chat_id, "Категории: " + chat_category[1])
         bot.register_next_step_handler(message, new_category)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
