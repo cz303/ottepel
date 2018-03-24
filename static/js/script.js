@@ -16,7 +16,16 @@ $(document).ready(function(){
 					'phone': result.value
 				},
 				success: function(data){
-					window.location.href = data;
+					if(data.toSting().length>2) {
+						window.location.href = data;	
+					} else {
+						swal(
+						  'Спасибо за заказ!',
+						  'Менеджер свяжется с вами!',
+						  'success'
+						)
+					}
+					
 				}
 			});
 		  }
