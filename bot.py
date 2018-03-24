@@ -12,11 +12,11 @@ from config import *
 import urllib3
 http = urllib3.PoolManager()
 
-WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Path to the ssl certificate
+WEBHOOK_SSL_CERT = '/etc/dehydrated/certs/dynamic-door.ru/fullchain.pem'  # Path to the ssl certificate
 WEBHOOK_SSL_PRIV = '/etc/dehydrated/certs/dynamic-door.ru/privkey.pem'  # Path to the ssl private key
 
-WEBHOOK_SSL_CERT = './server.crt'  # Path to the ssl certificate
-WEBHOOK_SSL_PRIV = './server.key'  # Path to the ssl private key
+#WEBHOOK_SSL_CERT = './server.crt'  # Path to the ssl certificate
+#WEBHOOK_SSL_PRIV = './server.key'  # Path to the ssl private key
 
 # Quick'n'dirty SSL certificate generation:
 #
