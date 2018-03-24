@@ -323,13 +323,16 @@ def previous_item(call):
 def to_menu(call):
     bot.send_message(call.message.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call.message))
 
-@bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
+@bot.callback_query_handler(func=lambda call: call.data == 'edit')
 def edit(call):
-    bot.send_message(call.message.chat.id, "Редактируем #"+call.data[4:], reply_markup=menu(call.message))
-    row=[]
-    row.append(types.InlineKeyboardButton("Редактировать название товара",callback_data="edit_name"))
-    row.append(types.InlineKeyboardButton("Редактировать цену",callback_data="edit_price"))
-    # row.append(types.InlineKeyboardButton("Поменять картинку",callback_data="edit"+str(list_items[item_id].id)))
+    bot.send_message(call.message.chat.id, "Редактируем #", reply_markup=menu(call.message))
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
+    markup.row(types.KeyboardButton('Редактировать имя товара'))
+    markup.row(types.KeyboardButton('Редактировать цену'))
+        # markup.row(types.KeyboardButton('Список товаров'))
+        #markup.row(types.KeyboardButton('Вывести количество товаров'))
+    return markup
+
     
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
