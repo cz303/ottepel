@@ -328,9 +328,8 @@ def to_menu(call):
 def edit(call):
     bot.send_message(call.message.chat.id, "Редактируем #", reply_markup=menu(call.message))
     markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
-
-        markup.row(types.KeyboardButton('Редактировать имя товара'))
-        markup.row(types.KeyboardButton('Редактировать цену'))
+    markup.row(types.KeyboardButton('Редактировать имя товара'))
+    markup.row(types.KeyboardButton('Редактировать цену'))
         # markup.row(types.KeyboardButton('Список товаров'))
         #markup.row(types.KeyboardButton('Вывести количество товаров'))
     return markup
