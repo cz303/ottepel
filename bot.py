@@ -171,14 +171,14 @@ def process_choose(message):
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
-    elif message.text == 'Вывести количество товаров': 
-        all_items = Item.query.filter_by(market_id=chat_id).all()
-        bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
-        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)        
-        for i in range(len(all_items)):
-            keyboard.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))])
-            #+ bot.send_photo(chat_id, all_items[i].picture))])
-        bot.send_message(message.chat.id, 'ваш товар', reply_markup=keyboard)
+    #elif message.text == 'Вывести количество товаров': 
+    #    all_items = Item.query.filter_by(market_id=chat_id).all()
+    #    bot.send_message(chat_id, "У вас: " + str(len(all_items)) + " товаров")
+    #    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)        
+    #    for i in range(len(all_items)):
+    #        keyboard.add(*[types.KeyboardButton('Название товара: ' + all_items[i].name + ' цена товара: ' + str(all_items[i].price))])
+    #        #+ bot.send_photo(chat_id, all_items[i].picture))])
+    #    bot.send_message(message.chat.id, 'ваш товар', reply_markup=keyboard)
     elif message.text == 'Список товаров':
         next_id = 0
         list_items = Item.query.filter_by(market_id=chat_id).all()
@@ -276,7 +276,8 @@ def items_slider(chat_id, list_items, item_id):
         next_id = 0
 
     row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name, callback_data="ignore"))
-    
+    row.append(types.InlineKeyboardButton("КАРТИНКУ СЮДА", callback_data="ignore"))
+
     markup.row(*row)
     row=[]
     if len(list_items) > 1:
