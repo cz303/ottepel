@@ -68,21 +68,19 @@ class Ecommerce(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
-    category_items = db.Column(db.String(255))
     price = db.Column(db.Integer)
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
     category_id = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, name='', category_items ='', price=0, picture=None, market_id=0, filled=False):
+    def __init__(self, name='', price=0, picture=None, market_id=0, filled=False, category_id=0):
         self.name = name
-        self.category_items = category_items
         self.price = price
         self.picture = picture
         self.market_id = market_id
-        self.filled = filled
         self.category_id = category_id
+        self.filled = filled
 
     def __repr__(self):
         return '<Item #%r>' % self.id
@@ -191,9 +189,9 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_market)
     elif message.text == 'Добавить товар':
     	bot.send_message(chat_id, "Введитие категорию товара")
-    	bot.register_next_step_handler(message, new_category)
-        # bot.send_message(chat_id, "Введитие название товара")
-        # bot.register_next_step_handler(message, new_items)
+    	# bot.register_next_step_handler(message, new_category)
+        bot.send_message(chat_id, "Введитие название товара")
+        bot.register_next_step_handler(message, new_items)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
         bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
