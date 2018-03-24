@@ -9,7 +9,8 @@ import logging
 from time import sleep
 from slugify import slugify
 from config import *
-import urllib2
+import urllib3
+http = urllib3.PoolManager()
 
 WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Path to the ssl certificate
 WEBHOOK_SSL_PRIV = '/etc/dehydrated/certs/dynamic-door.ru/privkey.pem'  # Path to the ssl private key
@@ -184,9 +185,8 @@ def process_choose(message):
         next_id = 0
         list_items = Item.query.filter_by(market_id=chat_id).all()
         markup = items_slider(chat_id, list_items, next_id)
-        response = urllib2.urlopen(str(list_items[next_id].picture))
-        data = response.read()
-        bot.send_photo(call.from_user.id, data, reply_markup=markup)
+        r = http.request('GET', str(list_items[next_id].picture))
+        bot.send_photo(call.from_user.id, r.data, reply_markup=markup)
     elif message.text.startswith('Редактировать товар #'):
         bot.send_message(chat_id, "Вы хотели отредактировать товар #" + message.text[21:], reply_markup=menu(message))
     else:
@@ -308,9 +308,8 @@ def next_item(call):
     item_num = int(call.data[9:])
     markup = items_slider(chat_id, list_items, item_num)
     delete_message(call.from_user.id, call.message.message_id)
-    response = urllib2.urlopen(str(list_items[item_num].picture))
-    data = response.read()
-    bot.send_photo(call.from_user.id, data, reply_markup=markup)
+    r = http.request('GET', str(list_items[item_num].picture))
+    bot.send_photo(call.from_user.id, r.data, reply_markup=markup)
     bot.answer_callback_query(call.id, text="")
 
 @bot.callback_query_handler(func=lambda call: call.data[0:9] == 'prev-item')
@@ -320,9 +319,8 @@ def previous_item(call):
     item_num = int(call.data[9:])
     markup = items_slider(chat_id, list_items, item_num)
     delete_message(call.from_user.id, call.message.message_id)
-    response = urllib2.urlopen(str(list_items[item_num].picture))
-    data = response.read()
-    bot.send_photo(call.from_user.id, data, reply_markup=markup)
+    r = http.request('GET', str(list_items[item_num].picture))
+    bot.send_photo(call.from_user.id, r.data, reply_markup=markup)
     bot.answer_callback_query(call.id, text="")
 
 @bot.callback_query_handler(func=lambda call: call.data == 'menu')
