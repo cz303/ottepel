@@ -367,7 +367,7 @@ def new_category(message):
             item_dict[chat_id] = item.id
         else:
             cat = Category(msg)
-            db.session.add(new_item)
+            db.session.add(cat)
             db.session.commit()
             item_dict[chat_id] = cat.id
         bot.send_message(chat_id, "Введите название товара")
