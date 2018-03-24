@@ -281,12 +281,12 @@ def items_slider(chat_id, list_items, item_id):
     row=[]
     if len(list_items) > 1:
         row.append(types.InlineKeyboardButton("<",callback_data="prev-item"+str(prev_id)))
-        row.append(types.KeyboardButton('/start'))
-        row.append(types.KeyboardButton('Редактировать товар #'+str(list_items[item_id].id)))
+        row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
+        row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
         row.append(types.InlineKeyboardButton(">",callback_data="next-item"+str(next_id)))
     else:
-        row.append(types.InlineKeyboardButton("В меню",callback_data="to_menu"))
-        row.append(types.KeyboardButton('Редактировать товар #'+str(list_items[item_id].id)))
+        row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
+        row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
     markup.row(*row)
     return markup
 
@@ -308,9 +308,13 @@ def previous_item(call):
     bot.edit_message_text("Товары", call.from_user.id, call.message.message_id, reply_markup=markup)
     bot.answer_callback_query(call.id, text="")
 
-@bot.callback_query_handler(func=lambda call: call.data == 'to_menu')
+@bot.callback_query_handler(func=lambda call: call.data == 'menu')
 def to_menu(call):
-	bot.send_message(call.chat.id, reply_markup=keyboard)
+    bot.send_message(call.chat.id, "Выберите дальнейшее действие", reply_markup=menu(call))
+
+@bot.callback_query_handler(func=lambda call: call.data[0:4] == 'edit')
+def to_menu(call):
+    bot.send_message(call.chat.id, "Редактируем #"+call.data[4:], reply_markup=menu(call))
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
