@@ -358,17 +358,31 @@ def process_edit(message):
 
 def change_item(message):
     chat_id = message.chat.id
-    new_item = Item(message.text, 0, None, chat_id)
-    db.session.add(new_item)
+    item_num = chat_dict[chat_id]
+    one_item = Item.query.filter_by(id=item_num).first()
+    one_item.name = message.text
     db.session.commit()
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    bot.send_message(chat_id, "Название изменено. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
 
 def change_price(message):
-    chat_id = message.cahat.id
-    new_price = Item(message.text, 0, None, chat_id)
-    db.sessin.add(new_price)
-    db.session.commit()
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    chat_id = message.chat.id
+    item_num = chat_dict[chat_id]
+    one_item = Item.query.filter_by(id=item_num).first()
+    try:
+        a = int(message.text)
+    except ValueError:
+        bot.send_message(chat_id, "Введите верное значение")
+        bot.register_next_step_handler(message, change_price)
+    else:
+        if a > 0:
+            one_item.price = a
+            db.session.commit()
+            bot.send_message(chat_id, "Цена изменено. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
+            #bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+        else:
+            bot.send_message(chat_id, "Введите верное значение")
+            bot.register_next_step_handler(message, change_price)
+
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
