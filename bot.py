@@ -362,7 +362,8 @@ def change_item(message):
     one_item = Item.query.filter_by(id=item_num).first()
     one_item.name = message.text
     db.session.commit()
-    bot.send_message(chat_id, "Название изменено. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
+    bot.send_message(chat_id, "Название изменено.") 
+    bot.register_next_step_handler(message, menu)
 
 def change_price(message):
     chat_id = message.chat.id
@@ -377,8 +378,8 @@ def change_price(message):
         if a > 0:
             one_item.price = a
             db.session.commit()
-            bot.send_message(chat_id, "Цена изменено. Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
-            #bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+            bot.send_message(chat_id, "Цена изменено.")
+            bot.register_next_step_handler(message, change_price)
         else:
             bot.send_message(chat_id, "Введите верное значение")
             bot.register_next_step_handler(message, change_price)
