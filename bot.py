@@ -334,10 +334,10 @@ def items_slider2(market_id, list_items, item_id):
     row=[]
     if len(list_items) > 1:
         row.append(types.InlineKeyboardButton("<",callback_data="market_prev-item"+str(prev_id)+"="+str(market_id)))
-        row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"))
+        row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"+str(next_id)))
         row.append(types.InlineKeyboardButton(">",callback_data="market_next-item"+str(next_id)+"="+str(market_id)))
     else:
-        row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"))
+        row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"+str(next_id)))
         # row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
     markup.row(*row)
     row=[]
@@ -370,15 +370,17 @@ def market_previous_item(call):
     bot.send_photo(call.from_user.id, r.data, reply_markup=markup)
     bot.answer_callback_query(call.id, text="")
 
-@bot.callback_query_handler(func=lambda call: call.data == 'market_menu')
+@bot.callback_query_handler(func=lambda call: call.data[0:11] == 'market_menu')
 def to_menu(call):
-    my_key = Ecommerce.query.filter_by(pkey1=market_id).all()
-    merchant_id = Ecommerce.query.filter_by(merchant_id=market_id).all()
-    order_id = Order.query.filter_by(id=market_id)
-    amount = Item.query.filter_by(price = market_id)
-    markup = get_pay_link(my_key, merchant_id, order_id, amount)
-    print(markup)
-    bot.send_message(call.message.chat.id, markup)
+    item_id = int(call.data[11:])
+    one_item = Item.query.filter_by(id=item_id).first()
+    one_market = Ecommerce.query.filter_by(id=one_item.market_id).first()
+    new_order = Orders(chat_id, one_item.market_id, one_item.id)
+    db.session.add(new_order)
+    db.session.commit()
+    pay_link = get_pay_link(one_market.pkey1, one_market.merchant_id, new_order.id, one_item.price)
+    print(pay_link)
+    bot.send_message(call.message.chat.id, pay_link)
 
 #def get_pay_link(my_key, merchant_id, order_id, amount):
 #    print("Ghkexbkjcm")
