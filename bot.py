@@ -273,8 +273,6 @@ def new_category(message):
     if one_item.category:
         bot.send_message(chat_id, "Такая категория уже существует")
         bot.register_next_step_handler(message, new_category)
-    else:
-
 
 def new_items(message):
     chat_id = message.chat.id
