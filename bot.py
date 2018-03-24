@@ -126,11 +126,11 @@ db.create_all()
 def get_pay_link(my_key, merchant_id, order_id, amount):
     data = {
         "request":{
-            "order_id": order_id,
+            "order_id": str(order_id),
             "order_desc": "Оплата через eMarketBot",
             "currency":"RUB",
-            "amount":amount,
-            "merchant_id":merchant_id
+            "amount": str(amount),
+            "merchant_id":str(merchant_id)
         }
     }
     assert 'request' in data.keys()
