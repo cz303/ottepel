@@ -6,6 +6,7 @@ import json
 import calendar
 import flask
 import logging
+import hashlib
 from time import sleep
 from slugify import slugify
 from config import *
@@ -54,6 +55,10 @@ class Ecommerce(db.Model):
     market = db.Column(db.PickleType())
     location = db.Column(db.PickleType())
     domain = db.Column(db.String(255))
+    api_bot = db.Column(db.String(255))
+    pkey1 = db.Column(db.String(255))
+    pkey2 = db.Column(db.String(255))
+    merchant_id = db.Column(db.String(255))
 
     def __init__(self, chat_id, has_shop=False, market=None, location=None, domain=None):
         self.chat_id = chat_id
@@ -71,7 +76,7 @@ class Item(db.Model):
     price = db.Column(db.Integer)
     picture = db.Column(db.PickleType())
     market_id = db.Column(db.Integer)
-    category_id = db.Column(db.Integer)
+      = db.Column(db.Integer)
     filled = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, name='', price=0, picture=None, market_id=0, filled=False, category_id=0):
@@ -435,6 +440,36 @@ def change_picture(message):
     else:
         bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
         bot.register_next_step_handler(message, new_picture)
+
+
+def buy():
+    my_key = 'TohkK63Gmnsplp5GoeChftrQvi440CDe'
+    merchant_id = '1408560'
+    data = {
+        "request":{
+            "order_id": "123",
+            "order_desc": "Test payment",
+            "currency":"RUB",
+            "amount":"125",
+            "merchant_id":merchant_id
+        }
+    }
+    assert 'request' in data.keys()
+    keys = sorted(data['request'].keys())
+    values = [my_key]
+    values += [data['request'][key] for key in keys]
+    raw = '|'.join(values)
+    data['request']['signature'] = hashlib.sha1(raw.encode('utf-8')).hexdigest()
+
+    encoded_body = json.dumps(data)
+    http = urllib3.PoolManager()
+    r = http.request('POST', 'https://api.fondy.eu/api/checkout/redirect/',
+        headers={'Content-Type': 'application/json'},
+        body=encoded_body)
+
+    print r.read()
+
+
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
