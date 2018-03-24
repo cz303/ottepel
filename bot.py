@@ -178,7 +178,7 @@ def category(catid):
 def pay(oid):
     order = Orders.query.filter_by(id=oid).first()
     item = Item.query.filter_by(id=order.item_id).first()
-    ecommerce = Ecommerce.query.filter_by(item.market_id).first()
+    ecommerce = Ecommerce.query.filter_by(chat_id=item.market_id).first()
     return flask.render_template('pay.html', item=item, ecommerce=ecommerce)
 
 '''@app.route('/buy', methods=['POST'])
