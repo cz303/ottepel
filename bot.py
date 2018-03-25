@@ -540,7 +540,7 @@ def new_picture(message):
         new_item.picture = downloaded_file
         new_item.filled = True
         db.session.commit()
-        bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
+        bot.send_message(chat_id, "Ваш товар добавлен! Выберите дальнейшее действие", reply_markup=menu(message))
     else:
         bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
         bot.register_next_step_handler(message, new_picture)
