@@ -42,7 +42,6 @@ app = flask.Flask(__name__, static_url_path='/static')
 ###### DB
 from flask_sqlalchemy import SQLAlchemy
 
-app.config["SERVER_NAME"] = "dynamic-door.ru"
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONFIG
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -168,7 +167,7 @@ def mainw():
     products = Item.query.all()
     return flask.render_template('index.html', categories=categories, products=products)
 
-@app.route("/", subdomain="<username>")
+@app.route("/shop/<username>")
 def username_index(username):
     
     return username + ".your-domain.tld"
@@ -363,9 +362,9 @@ def items_slider2(market_id, list_items, item_id):
         next_id = 0
     row=[]
     if len(list_items) > 1:
-        row.append(types.InlineKeyboardButton("\xE2\x8F\xAA",callback_data="market_prev-item"+str(prev_id)+"="+str(market_id)))
+        row.append(types.InlineKeyboardButton("⏪",callback_data="market_prev-item"+str(prev_id)+"="+str(market_id)))
         row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"+str(list_items[next_id].id)))
-        row.append(types.InlineKeyboardButton("\xE2\x8F\xA9",callback_data="market_next-item"+str(next_id)+"="+str(market_id)))
+        row.append(types.InlineKeyboardButton("⏩",callback_data="market_next-item"+str(next_id)+"="+str(market_id)))
     else:
         row.append(types.InlineKeyboardButton("Купить",callback_data="market_menu"+str(list_items[next_id].id)))
         # row.append(types.InlineKeyboardButton("Редактировать товар",callback_data="edit"+str(list_items[item_id].id)))
@@ -581,10 +580,10 @@ def items_slider(chat_id, list_items, item_id):
     markup.row(*row)
     row=[]
     if len(list_items) > 1:
-        row.append(types.InlineKeyboardButton("\xE2\x8F\xAA",callback_data="prev-item"+str(prev_id)))
+        row.append(types.InlineKeyboardButton("⏪",callback_data="prev-item"+str(prev_id)))
         row.append(types.InlineKeyboardButton("\xF0\x9F\x94\x99",callback_data="menu"))
         row.append(types.InlineKeyboardButton("\xE2\x9C\x8F",callback_data="edit"+str(list_items[item_id].id)))
-        row.append(types.InlineKeyboardButton("\xE2\x8F\xA9",callback_data="next-item"+str(next_id)))
+        row.append(types.InlineKeyboardButton("⏩",callback_data="next-item"+str(next_id)))
     else:
         row.append(types.InlineKeyboardButton("\xF0\x9F\x94\x99",callback_data="menu"))
         row.append(types.InlineKeyboardButton("\xE2\x9C\x8F",callback_data="edit"+str(list_items[item_id].id)))
