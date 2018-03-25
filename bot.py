@@ -412,7 +412,7 @@ def to_menu(call):
     db.session.add(new_order)
     db.session.commit()
     bot.send_message(one_item.market_id, "Новый заказ!")
-    if one_market.pkey1 && one_market.merchant_id:
+    if one_market.pkey1 and one_market.merchant_id:
         bot.send_message(call.message.chat.id, 'Спасибо за заказ. Ссылка для оплаты онлайн: https://dynamic-door.ru/pay/' + str(new_order.id), reply_markup=menu(call.message))
     else:
         bot.send_message(call.message.chat.id, 'Спасибо за заказ! У вас заказ #' + str(new_order.id), reply_markup=menu(call.message))
