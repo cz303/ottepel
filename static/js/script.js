@@ -31,4 +31,7 @@ $(document).ready(function(){
 		  }
 		})
 	});
+	$('.search').click(function(){
+		window.location.href = 'https://dynamic-door.ru/search/'+$('#search').val();
+	});
 });
