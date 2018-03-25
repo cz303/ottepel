@@ -356,7 +356,7 @@ def items_slider2(market_id, list_items, item_id):
     prev_id = item_id - 1
     next_id = item_id + 1
     row=[]
-    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name + " " + list_items[item_id].name, callback_data="ignore"))
+    row.append(types.InlineKeyboardButton(text=list_items[item_id].name + "; " + list_items[item_id].price + " ₽", callback_data="ignore"))
 
     markup.row(*row)
     if prev_id < 0:
@@ -501,7 +501,7 @@ def new_items(message):
     new_item = Item(message.text, 0, None, chat_id, False, item_dict[chat_id])
     db.session.add(new_item)
     db.session.commit()
-    bot.send_message(chat_id, "Введите цену товара")
+    bot.send_message(chat_id, "Введите цену товара в ₽")
     bot.register_next_step_handler(message, new_price)
 
 def new_price(message):
@@ -578,7 +578,7 @@ def items_slider(chat_id, list_items, item_id):
     if next_id > len(list_items) - 1:
         next_id = 0
 
-    row.append(types.InlineKeyboardButton(list_items[item_id].name + list_items[item_id].price, callback_data="ignore"))
+    row.append(types.InlineKeyboardButton(list_items[item_id].name +"; " +list_items[item_id].price+" ₽", callback_data="ignore"))
 
     markup.row(*row)
     row=[]
@@ -648,7 +648,7 @@ def process_edit(message):
         bot.send_message(chat_id, "Введите новое название товара")
         bot.register_next_step_handler(message, change_item)
     elif message.text == 'Редактировать цену':
-        bot.send_message(chat_id, "Введитие новую цену")
+        bot.send_message(chat_id, "Введитие новую цену в ₽")
         bot.register_next_step_handler(message, change_price)
     elif message.text == 'Изменить картинку':
         bot.send_message(chat_id, "Загрузите новую картинку")
