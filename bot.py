@@ -209,10 +209,10 @@ def buy():
     db.session.add(new_order)
     db.session.commit()
     if one_market.pkey1 and one_market.merchant_id:
+        return 'https://dynamic-door.ru/pay/'+str(new_order.id)
+    else:
         bot.send_message(one_item.market_id, "Новый заказ!")
         return ''
-    else:
-        return 'https://dynamic-door.ru/pay/'+str(new_order.id)
 
 @app.route('/merchant/<username>', methods=['GET'])
 def index(username):
