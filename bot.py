@@ -652,8 +652,11 @@ def process_edit(message):
         bot.send_message(chat_id, "Загрузите новую картинку")
         bot.register_next_step_handler(message, change_picture)
     elif message.text == 'Удалить товар':
-        bot.send_message(chat_id, "Вы действительно хотите удалить товар?(да\нет)")
+        markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
+        markup.row(types.KeyboardButton('Да'))
+        markup.row(types.KeyboardButton('Нет'))
         bot.register_next_step_handler(message, delete_item)
+        bot.send_message(chat_id, "Вы действительно хотите удалить товар?(да\нет)", reply_markup=markup)
     elif message.text == 'В меню':
          bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
     else:
@@ -702,13 +705,14 @@ def change_picture(message):
         bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
         bot.register_next_step_handler(message, new_picture)
         
-# TODO
-def delete_item():
-    markup = types.InlineKeyboardMarkup()
-    one_item = Item.query.filter_by(item_id=item_num).first()
-    row.append(types.InlineKeyboardButton('Удалить', callback_data=))
-    row.append(types.InlineKeyboardButton('Отмена', callback_data="menu"))
-    return markup
+def delete_item(message):
+    chat_id = message.chat.id
+    item_num = chat_dict[chat_id]
+    if message.text == 'Да':
+        bot.send_message(chat_id, "Удалено!")
+        bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
+    else:
+        bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
