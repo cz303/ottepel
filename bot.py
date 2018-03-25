@@ -641,7 +641,7 @@ def process_edit(message):
         bot.send_message(chat_id, "Загрузите новую картинку")
         bot.register_next_step_handler(message, change_picture)
     elif message.text == 'Удалить товар':
-        bot.send_message(chat_id, "Вы действительно хотите удалить товар?")
+        bot.send_message(chat_id, "Вы действительно хотите удалить товар?(да\нет)")
         bot.register_next_step_handler(message, delete_item)
     elif message.text == 'В меню':
          bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
@@ -692,12 +692,11 @@ def change_picture(message):
         bot.register_next_step_handler(message, new_picture)
 # TODO
 def delete_item(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
     chat_id = message.chat.id
-    markup = types.InlineKeyboardMarkup()
-    row = []
-    # row.append(types.InlineKeyboardButton('Удалить', callback_data=))
-    row.append(types.InlineKeyboardButton('Отмена', callback_data="menu"))
-    markup.row(*row)
+    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
+    markup.row(types.KeyboardButton('Удалить'))
+    markup.row(types.KeyboardButton('Отмена', reply_markup=edit_menu(message, menu)))
     return markup
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
