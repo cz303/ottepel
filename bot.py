@@ -692,11 +692,11 @@ def change_picture(message):
         bot.register_next_step_handler(message, new_picture)
 # TODO
 def delete_item(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
     chat_id = message.chat.id
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
     one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
     markup.row(types.KeyboardButton('Удалить'))
-    markup.row(types.KeyboardButton('Отмена', reply_markup=edit_menu(message, menu)))
+    markup.row(types.KeyboardButton('Отмена'))
     return markup
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
