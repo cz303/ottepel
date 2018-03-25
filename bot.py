@@ -622,6 +622,7 @@ def edit_menu(message, item_num):
     markup.row(types.KeyboardButton('Редактировать имя'))
     markup.row(types.KeyboardButton('Редактировать цену'))
     markup.row(types.KeyboardButton('Изменить картинку'))
+    markup.row(types.KeyboardButton('Удалить товар'))
     markup.row(types.KeyboardButton('В меню'))
     bot.register_next_step_handler(message, process_edit)
     return markup
@@ -639,6 +640,9 @@ def process_edit(message):
     elif message.text == 'Изменить картинку':
         bot.send_message(chat_id, "Загрузите новую картинку")
         bot.register_next_step_handler(message, change_picture)
+    elif message.text == 'Удалить товар':
+        bot.send_message(chat_id, "Вы действительно хотите удалить товар?")
+        bot.register_next_step_handler(message, delete_item)
     elif message.text == 'В меню':
          bot.send_message(chat_id, "Выберите дальнейшее действие", reply_markup=menu(message))
     else:
@@ -686,6 +690,12 @@ def change_picture(message):
     else:
         bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
         bot.register_next_step_handler(message, new_picture)
+# TODO
+def delete_item(message):
+    markup = types.InlineKeyboardMarkup()
+    one_item = Item.query.filter_by(id=item_num).first()
+    row.append(types.InlineKeyboardButton('Удалить', callback_data=))
+    row.append(types.InlineKeyboardButton('Отмена', callback_data="menu"))
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
