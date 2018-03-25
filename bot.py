@@ -693,8 +693,8 @@ def change_picture(message):
 # TODO
 def delete_item(message):
     markup = types.InlineKeyboardMarkup()
-    row = []
     one_item = Item.query.filter_by(id=item_num).first()
+    row = []
     # row.append(types.InlineKeyboardButton('Удалить', callback_data=))
     row.append(types.InlineKeyboardButton('Отмена', callback_data="menu"))
     markup.row(*row)
