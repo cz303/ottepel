@@ -694,7 +694,6 @@ def change_picture(message):
 def delete_item(message):
     chat_id = message.chat.id
     markup = types.InlineKeyboardMarkup()
-    one_item = Item.query.filter_by(id=item_num).first()
     row = []
     # row.append(types.InlineKeyboardButton('Удалить', callback_data=))
     row.append(types.InlineKeyboardButton('Отмена', callback_data="menu"))
