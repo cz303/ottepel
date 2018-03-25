@@ -431,13 +431,13 @@ def to_menu(call):
 def process_settings(message):
     chat_id = message.chat.id
     if message.text == 'Платежная система - pkey1':
-        bot.send_message(chat_id, "Введите значение")
+        bot.send_message(chat_id, "Зарегистрируйтесь по ссылке https://fondy.ru/ и введите значения из Личного кабинета. Введите значение pkey1")
         bot.register_next_step_handler(message, change_pkey1)
     elif message.text == 'Платежная система - pkey2':
-        bot.send_message(chat_id, "Введите значение")
+        bot.send_message(chat_id, "Зарегистрируйтесь по ссылке https://fondy.ru/ и введите значения из Личного кабинета. Введите значение pkey2")
         bot.register_next_step_handler(message, change_pkey2)
     elif message.text == 'Платежная система - Merchant id':
-        bot.send_message(chat_id, "Введите значение")
+        bot.send_message(chat_id, "Зарегистрируйтесь по ссылке https://fondy.ru/ и введите значения из Личного кабинета. Введите значение merchant_id")
         bot.register_next_step_handler(message, change_merchant_id)
     elif message.text == 'Выйти':
         bot.send_message(message.chat.id, "Выберите нужный пункт меню", reply_markup=menu(message))
