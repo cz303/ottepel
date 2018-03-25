@@ -690,6 +690,7 @@ def change_picture(message):
     else:
         bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
         bot.register_next_step_handler(message, new_picture)
+        
 # TODO
 def delete_item():
     markup = types.InlineKeyboardMarkup()
