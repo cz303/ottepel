@@ -583,13 +583,13 @@ def items_slider(chat_id, list_items, item_id):
     markup.row(*row)
     row=[]
     if len(list_items) > 1:
-        row.append(types.InlineKeyboardButton("⏪",callback_data="prev-item"+str(prev_id)))
-        row.append(types.InlineKeyboardButton("\xF0\x9F\x94\x99",callback_data="menu"))
-        row.append(types.InlineKeyboardButton("\xE2\x9C\x8F",callback_data="edit"+str(list_items[item_id].id)))
-        row.append(types.InlineKeyboardButton("⏩",callback_data="next-item"+str(next_id)))
+        row.append(types.InlineKeyboardButton("<",callback_data="prev-item"+str(prev_id)))
+        row.append(types.InlineKeyboardButton("Меню",callback_data="menu"))
+        row.append(types.InlineKeyboardButton("Редактировать",callback_data="edit"+str(list_items[item_id].id)))
+        row.append(types.InlineKeyboardButton(">",callback_data="next-item"+str(next_id)))
     else:
-        row.append(types.InlineKeyboardButton("\xF0\x9F\x94\x99",callback_data="menu"))
-        row.append(types.InlineKeyboardButton("\xE2\x9C\x8F",callback_data="edit"+str(list_items[item_id].id)))
+        row.append(types.InlineKeyboardButton("Меню",callback_data="menu"))
+        row.append(types.InlineKeyboardButton("Редактировать",callback_data="edit"+str(list_items[item_id].id)))
     markup.row(*row)	
     return markup
 
