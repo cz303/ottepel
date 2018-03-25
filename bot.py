@@ -169,18 +169,8 @@ def mainw():
 
 @app.route("/shop/<username>")
 def username_index(username):
-    ecommerce = Ecommerce.query.filter_by(domain=username).first()
-    products = Item.query.filter_by(market_id=ecommerce.chat_id).all()
-    category1 = []
-    for product in products:
-        if product.category_id not in category1:
-            category1.append(product.category_id)
     
-    category = []
-    for cat in category1:
-        catego = Category.query.filter_by(id=cat).first()
-        category.append(catego)
-    return flask.render_template('shop.html', ecommerce=ecommerce, category=category, products=products)
+    return username + ".your-domain.tld"
 
 @app.route('/category/<catid>', methods=['GET'])
 def category(catid):
@@ -365,7 +355,10 @@ def items_slider2(market_id, list_items, item_id):
     markup = types.InlineKeyboardMarkup()
     prev_id = item_id - 1
     next_id = item_id + 1
-    
+    row=[]
+    row.append(types.InlineKeyboardButton("ID " + str(list_items[item_id].id) + " "+ list_items[item_id].name, callback_data="ignore"))
+
+    markup.row(*row)
     if prev_id < 0:
         prev_id = len(list_items) - 1
     if next_id > len(list_items) - 1:
@@ -433,13 +426,13 @@ def to_menu(call):
 def process_settings(message):
     chat_id = message.chat.id
     if message.text == 'Платежная система - pkey1':
-        bot.send_message(chat_id, "Зарегистрируйтесь по ссылке https://fondy.ru/ и введите значения из Личного кабинета. Введите значение pkey1:")
+        bot.send_message(chat_id, "Введите значение")
         bot.register_next_step_handler(message, change_pkey1)
     elif message.text == 'Платежная система - pkey2':
-        bot.send_message(chat_id, "Зарегистрируйтесь по ссылке https://fondy.ru/ и введите значения из Личного кабинета. Введите значение pkey2")
+        bot.send_message(chat_id, "Введите значение")
         bot.register_next_step_handler(message, change_pkey2)
     elif message.text == 'Платежная система - Merchant id':
-        bot.send_message(chat_id, "Зарегистрируйтесь по ссылке https://fondy.ru/ и введите значения из Личного кабинета. Введите значение Merchant_id")
+        bot.send_message(chat_id, "Введите значение")
         bot.register_next_step_handler(message, change_merchant_id)
     elif message.text == 'Выйти':
         bot.send_message(message.chat.id, "Выберите нужный пункт меню", reply_markup=menu(message))
@@ -716,11 +709,8 @@ def change_picture(message):
         
 def delete_item(message):
     chat_id = message.chat.id
-    item_num = chat_dict[chat_id] 
+    item_num = chat_dict[chat_id]
     if message.text == 'Да':
-        item = Item.query.filter_by(id=item_num).first()
-        db.session.delete(item)
-        db.session.commit()
         bot.send_message(chat_id, "Удалено!")
         bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
     else:
