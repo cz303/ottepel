@@ -42,7 +42,7 @@ app = flask.Flask(__name__, static_url_path='/static')
 ###### DB
 from flask_sqlalchemy import SQLAlchemy
 
-
+app.config["SERVER_NAME"] = "dynamic-door.ru"
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONFIG
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -168,11 +168,22 @@ def mainw():
     products = Item.query.all()
     return flask.render_template('index.html', categories=categories, products=products)
 
+@app.route("/", subdomain="<username>")
+def username_index(username):
+    
+    return username + ".your-domain.tld"
+
 @app.route('/category/<catid>', methods=['GET'])
 def category(catid):
-    category = Category.query.filter_by(category_id=catid).first()
+    category = Category.query.filter_by(id=catid).first()
     products = Item.query.filter_by(category_id=category.id).all()
     return flask.render_template('category.html', category=category, products=products)
+
+@app.route('/search/<word>', methods=['GET'])
+def search(word):
+    products = Item.query.filter(Item.name.like("%"+word+"%")).all()
+    return flask.render_template('search.html', word=word, products=products)
+
 
 @app.route('/pay/<oid>', methods=['GET'])
 def pay(oid):

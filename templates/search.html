@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="items">
+    <div class="wrapper">
+      <h1>Поиск по слову "{{word}}"</h1>
+      <div class="products">
+        {% for item in products %}
+        <div class="product">
+          <img class="product__image" src="{{item.picture}}" alt="{{item.name}} за {{ item.price }} руб." />
+          <a href="/item/{{item.id}}" class="product__title">{{ item.name }}</a>
+          <div class="product__price">{{ item.price }} руб.</div>
+          <a href="#" class="product__button buy">Купить сейчас</a>
+          <input type="hidden" class="price" value="{{item.price}}"/>
+        </div>
+        {% endfor %}
+        <div class="holder"></div>
+        <div class="holder"></div>
+        <div class="holder"></div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
