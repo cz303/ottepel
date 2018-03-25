@@ -42,7 +42,6 @@ app = flask.Flask(__name__, static_url_path='/static')
 ###### DB
 from flask_sqlalchemy import SQLAlchemy
 
-app.config["SERVER_NAME"] = "dynamic-door.ru"
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONFIG
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -168,7 +167,7 @@ def mainw():
     products = Item.query.all()
     return flask.render_template('index.html', categories=categories, products=products)
 
-@app.route("/", subdomain="<username>")
+@app.route("/shop/<username>")
 def username_index(username):
     
     return username + ".your-domain.tld"
