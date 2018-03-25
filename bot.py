@@ -584,12 +584,12 @@ def items_slider(chat_id, list_items, item_id):
     row=[]
     if len(list_items) > 1:
         row.append(types.InlineKeyboardButton("<",callback_data="prev-item"+str(prev_id)))
-        row.append(types.InlineKeyboardButton("Меню",callback_data="menu"))
-        row.append(types.InlineKeyboardButton("Редактировать",callback_data="edit"+str(list_items[item_id].id)))
+        row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
+        row.append(types.InlineKeyboardButton("Изменить",callback_data="edit"+str(list_items[item_id].id)))
         row.append(types.InlineKeyboardButton(">",callback_data="next-item"+str(next_id)))
     else:
-        row.append(types.InlineKeyboardButton("Меню",callback_data="menu"))
-        row.append(types.InlineKeyboardButton("Редактировать",callback_data="edit"+str(list_items[item_id].id)))
+        row.append(types.InlineKeyboardButton("В меню",callback_data="menu"))
+        row.append(types.InlineKeyboardButton("Изменить",callback_data="edit"+str(list_items[item_id].id)))
     markup.row(*row)	
     return markup
 
