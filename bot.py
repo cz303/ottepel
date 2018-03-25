@@ -302,7 +302,7 @@ def process_choose(message):
         bot.register_next_step_handler(message, new_category)
     elif message.text == 'Получить информацию о магазине':
         one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-        bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"'")
+        bot.send_message(chat_id, "Ваш магазин: '"+one_item.market+"' по адресу '"+one_item.location+"' также доступен по ссылке https://dynamic-door.ru/shop/"+one_item.domain)
         bot.send_message(chat_id, "Выберите нужный пункт меню", reply_markup=menu(message))
     elif message.text == 'Список товаров':
         next_id = 0
