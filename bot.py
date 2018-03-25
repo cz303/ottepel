@@ -291,6 +291,7 @@ def process_choose(message):
         for item in result:
             string +='Магазин #'+ str(item.domain) + '\n'
         bot.send_message(chat_id, string)
+        bot.send_message(chat_id, 'Выберите магазин, написав "#название_магазина"')
         bot.register_next_step_handler(message, lol)
     elif message.text == 'Добавить товар':
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -356,7 +357,7 @@ def items_slider2(market_id, list_items, item_id):
     prev_id = item_id - 1
     next_id = item_id + 1
     row=[]
-    row.append(types.InlineKeyboardButton(text=list_items[item_id].name + "; " + list_items[item_id].price + " ₽", callback_data="ignore"))
+    row.append(types.InlineKeyboardButton(text=list_items[item_id].name + "; " + str(list_items[item_id].price) + " ₽", callback_data="ignore"))
 
     markup.row(*row)
     if prev_id < 0:
