@@ -711,6 +711,9 @@ def delete_item(message):
     chat_id = message.chat.id
     item_num = chat_dict[chat_id]
     if message.text == 'Да':
+        item = Item.query.filter_by(id=item_num).first().delete()
+        db.session.delete(item)
+        db.session.commit()
         bot.send_message(chat_id, "Удалено!")
         bot.send_message(chat_id, "Выберите нужный пункт редактирования", reply_markup=edit_menu(message, item_num))
     else:
