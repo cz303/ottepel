@@ -692,9 +692,9 @@ def change_picture(message):
         bot.register_next_step_handler(message, new_picture)
 # TODO
 def delete_item(message):
+    chat_id = message.chat.id
     markup = types.InlineKeyboardMarkup()
     row = []
-    one_item = Item.query.filter_by(id=item_num).first()
     # row.append(types.InlineKeyboardButton('Удалить', callback_data=))
     row.append(types.InlineKeyboardButton('Отмена', callback_data="menu"))
     markup.row(*row)
