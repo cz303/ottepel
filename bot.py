@@ -169,8 +169,9 @@ def mainw():
 
 @app.route("/shop/<username>")
 def username_index(username):
-    
-    return username + ".your-domain.tld"
+    ecommerce = Ecommerce.query.filter_by(domain=username).first()
+    products = Item.query.filter_by(market_id=ecommerce.chat_id).all()
+    return flask.render_template('category.html', ecommerce=ecommerce, products=products)
 
 @app.route('/category/<catid>', methods=['GET'])
 def category(catid):
