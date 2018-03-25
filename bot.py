@@ -208,7 +208,7 @@ def buy():
     new_order = Orders(chat_id, one_item.market_id, one_item.id)
     db.session.add(new_order)
     db.session.commit()
-    if one_market.pkey1 != None and one_market.merchant_id != None:
+    if one_market.pkey1 and one_market.merchant_id:
         bot.send_message(one_item.market_id, "Новый заказ!")
         return ''
     else:
