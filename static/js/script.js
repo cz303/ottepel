@@ -16,7 +16,7 @@ $(document).ready(function(){
 					'phone': result.value
 				},
 				success: function(data){
-					if(data.toSting().length>2) {
+					if(data.toString().length>2) {
 						window.location.href = data;	
 					} else {
 						swal(
