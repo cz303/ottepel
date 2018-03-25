@@ -701,13 +701,13 @@ def change_picture(message):
     else:
         bot.send_message(chat_id, "Это была не картинка. Нужна Картинка!")
         bot.register_next_step_handler(message, new_picture)
+        
 # TODO
-def delete_item(message):
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,selective=True)
-    chat_id = message.chat.id
-    one_item = Ecommerce.query.filter_by(chat_id=chat_id).first()
-    markup.row(types.KeyboardButton('Удалить'))
-    markup.row(types.KeyboardButton('Отмена', reply_markup=edit_menu(message, menu)))
+def delete_item():
+    markup = types.InlineKeyboardMarkup()
+    one_item = Item.query.filter_by(item_id=item_num).first()
+    row.append(types.InlineKeyboardButton('Удалить', callback_data=))
+    row.append(types.InlineKeyboardButton('Отмена', callback_data="menu"))
     return markup
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
