@@ -694,7 +694,7 @@ def change_picture(message):
 def delete_item(message):
     markup = types.InlineKeyboardMarkup()
     one_item = Item.query.filter_by(id=item_num).first()
-    row.append(types.InlineKeyboardButton('Удалить', callback_data=))
+    # row.append(types.InlineKeyboardButton('Удалить', callback_data=))
     row.append(types.InlineKeyboardButton('Отмена', callback_data="menu"))
 
 # Remove webhook, it fails sometimes the set if there is a previous webhook
